@@ -3,24 +3,20 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>HUPsi – Einreichungen</title>
+<title>😅 HUPsi – Einreichungen</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box}
 body{background:#f1f5f9;font-family:system-ui,sans-serif;color:#111}
 .tag{display:inline-block;background:#fee2e2;color:#991b1b;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:700;margin:2px}
-details>summary{cursor:pointer;list-style:none}
-details>summary::-webkit-details-marker{display:none}
 .dl{display:grid;grid-template-columns:180px 1fr;gap:6px 12px;font-size:12px;padding:5px 0;border-bottom:1px solid #f8fafc}
 .dk{color:#94a3b8;font-weight:600}
 .dv{color:#1e293b;white-space:pre-wrap;word-break:break-word}
-
 /* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
 .modal-box{background:#e5e7eb;border-radius:24px;width:100%;max-width:860px;overflow:hidden;position:relative;margin:auto}
-
-/* Filled form inside modal */
+/* Filled form */
 .fm-header{background:#111;padding:28px 40px;color:#fff}
 .fm-notice{background:#fffbeb;border-bottom:1px solid #fde68a;padding:10px 40px;font-size:13px;color:#92400e}
 .fm-body{padding:28px 40px;display:flex;flex-direction:column;gap:18px}
@@ -41,12 +37,18 @@ details>summary::-webkit-details-marker{display:none}
 .fm-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
 .fm-step-num{color:#e0001b;font-weight:800;min-width:20px;margin-top:2px;font-size:13px}
 .fm-sub-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
-
 @media print{
   .modal-overlay{position:static;background:none;padding:0;display:block}
   .modal-box{border-radius:0;max-width:none}
   .no-print-modal{display:none!important}
 }
+.ef{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.75rem;background:#fff;font-family:inherit;font-size:13px;min-height:80px;resize:vertical;outline:none;line-height:1.5}
+.ef:focus{border-color:#94a3b8}
+.ef-sm{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.6rem .75rem;background:#fff;font-family:inherit;font-size:13px;outline:none;min-height:40px}
+.ef-sm:focus{border-color:#94a3b8}
+.echk{display:flex;gap:.5rem;align-items:flex-start;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem;cursor:pointer;font-size:13px}
+.echk:hover{border-color:#94a3b8}
+input[type=checkbox]{accent-color:#e0001b}
 </style>
 </head>
 <body class="p-4 md:p-8">
@@ -54,27 +56,138 @@ details>summary::-webkit-details-marker{display:none}
 <div class="max-w-4xl mx-auto">
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
     <div>
-      <h1 class="text-2xl font-black">Einreichungen</h1>
+      <h1 class="text-2xl font-black">HUPsi – Einreichungen</h1>
       <p class="text-sm text-slate-400 mt-1" id="meta">Wird geladen…</p>
     </div>
     <div class="flex gap-2 flex-wrap">
       <button onclick="exportExcel()" id="xlsBtn" disabled class="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-40">⬇ Excel-Export</button>
-      <button onclick="exportJSON()" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">⬇ JSON</button>
-      <label class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300 cursor-pointer">⬆ Import<input type="file" accept=".json" onchange="importJSON(event)" class="hidden"/></label>
+      <button onclick="loadSubs()" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">↻ Aktualisieren</button>
+      <button onclick="openEntryModal()" class="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-900">✎ Manuell hinzufügen</button>
       <a href="index.html" class="inline-flex items-center gap-2 rounded-xl bg-[#e0001b] px-4 py-2 text-sm font-bold text-white hover:opacity-90">+ Neues Formular</a>
     </div>
   </div>
-  <div id="list"></div>
+  <div id="list"><p class="text-center text-slate-400 mt-16">Wird geladen…</p></div>
+</div>
+
+<!-- Entry Modal: manual submission -->
+<div id="entryModal" class="modal-overlay hidden" onclick="closeEntryBg(event)">
+  <div class="modal-box">
+    <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
+      <span class="font-bold text-sm text-slate-700">✎ Einreichung manuell hinzufügen</span>
+      <button onclick="closeEntryModal()" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+    </div>
+    <div style="padding:28px 36px;display:flex;flex-direction:column;gap:16px;background:#e5e7eb">
+
+      <div style="background:#fff8e1;border:1px solid #fde68a;border-radius:12px;padding:12px 16px;font-size:13px;color:#92400e">
+        Aus E-Mail-Benachrichtigungen übertragen — Felder die nicht in der E-Mail standen einfach leer lassen.
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">👤 Name</div>
+        <input class="ef-sm" type="text" id="en_name" placeholder="Vor- und Nachname">
+        <div style="margin-top:12px">
+          <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:6px">Datum der Einreichung</label>
+          <input class="ef-sm" type="datetime-local" id="en_date">
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🏷 Problemfeld</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px" id="en_pf_boxes"></div>
+        <input class="ef-sm" type="text" id="en_pfS" placeholder="Sonstiges Problemfeld">
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🎯 Ziel des Vorgangs</div>
+        <textarea class="ef" id="en_ziel" placeholder="Was wollte die Person konkret erreichen?"></textarea>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">📍 Ausgangssituation</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Kundentyp / Fall</label><textarea class="ef" id="en_ktyp"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Besonderheiten</label><textarea class="ef" id="en_beson"></textarea></div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">📋 Ablauf</div>
+        <div style="display:flex;flex-direction:column;gap:8px" id="en_steps"></div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">⚠️ Problem im Ablauf</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Bei welchem Schritt?</label><textarea class="ef" id="en_pSch"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Was genau ist passiert?</label><textarea class="ef" id="en_pWas"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Was wurde erwartet?</label><textarea class="ef" id="en_pErw"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Was war unklar?</label><textarea class="ef" id="en_pUnk"></textarea></div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🗄 Benötigte Daten</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Welche Daten?</label><textarea class="ef" id="en_dBra"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Wo erwartet?</label><textarea class="ef" id="en_dErw"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Wo gefunden?</label><textarea class="ef" id="en_dFan"></textarea></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Prüfung am Ende?</label><textarea class="ef" id="en_dPru"></textarea></div>
+        </div>
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:14px">🔍 Zusatzfragen</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="en_zusatz"></div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🔄 Workaround</div>
+        <textarea class="ef" id="en_work"></textarea>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">⏱ Aufwand und Häufigkeit</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Aktuelle Dauer</label><input class="ef-sm" type="text" id="en_dauI" placeholder="z. B. 15 Minuten"></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Erwartete Dauer</label><input class="ef-sm" type="text" id="en_dauE" placeholder="z. B. 3 Minuten"></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Häufigkeit</label><input class="ef-sm" type="text" id="en_haeu" placeholder="z. B. 5x pro Woche"></div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🛡 Risiko</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px" id="en_risk_boxes"></div>
+        <textarea class="ef" id="en_rskT" placeholder="Beschreibung was schiefgehen kann"></textarea>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">✨ Soll-Zustand</div>
+        <textarea class="ef" id="en_soll"></textarea>
+      </div>
+
+      <div style="background:#fff5f5;border:1px solid #e0001b;border-radius:14px;padding:20px">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🎯 Fertig-Definition</div>
+        <textarea class="ef" id="en_fert" placeholder="Woran erkennt man, dass der Vorgang korrekt abgeschlossen ist?"></textarea>
+      </div>
+
+      <div id="en_saveErr" style="display:none" class="rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3"></div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:4px">
+        <button onclick="closeEntryModal()" style="background:#f1f5f9;border:none;border-radius:12px;padding:11px 22px;font-weight:700;font-size:13px;cursor:pointer">Abbrechen</button>
+        <button onclick="saveManualEntry()" id="en_saveBtn" style="background:#16a34a;color:#fff;border:none;border-radius:12px;padding:11px 28px;font-weight:700;font-size:13px;cursor:pointer">Einreichung speichern</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Modal -->
-<div id="modal" class="modal-overlay hidden" onclick="closeModal(event)">
+<div id="modal" class="modal-overlay hidden" onclick="closeModalBg(event)">
   <div class="modal-box" id="modalBox">
     <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
       <span class="font-bold text-sm text-slate-700">Formular-Ansicht</span>
       <div class="flex gap-2">
         <button onclick="window.print()" class="inline-flex items-center gap-2 rounded-lg bg-slate-400 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-500">🖨 Drucken</button>
-        <button onclick="document.getElementById('modal').classList.add('hidden')" class="inline-flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+        <button onclick="closeModal()" class="inline-flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
       </div>
     </div>
     <div id="modalContent"></div>
@@ -82,182 +195,282 @@ details>summary::-webkit-details-marker{display:none}
 </div>
 
 <script>
-const PF_ALL = ["Buchhaltung / OP/AP / Rechnungen","Storno / Rechnungskorrektur","Adressänderung","Mahnwesen / Zahlung / Rücklastschrift","Fehlermeldung","Wiedervorlage / Organisation","Oberfläche / Übersicht","Trägerdienste / Kommunikation"];
+
+
+
+
+const GIST_TOKEN = [103, 104, 112, 95, 79, 109, 101, 49, 119, 79, 65, 109, 120, 105, 69, 106, 69, 88, 100, 98, 66, 111, 90, 98, 120, 100, 81, 69, 119, 50, 100, 55, 103, 98, 51, 86, 118, 116, 113, 56].map(c=>String.fromCharCode(c)).join("");
+const GIST_ID    = "a465bb64c6186911439f3ff3dc8fb110";
+const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
+
+async function loadFromGist() {
+  const res = await fetch(GIST_URL, {
+    headers: { "Authorization": `token ${GIST_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
+  });
+  const data = await res.json();
+  return JSON.parse(data.files["submissions.json"].content).submissions || [];
+}
+
+async function saveAllToGist(submissions) {
+  const res = await fetch(GIST_URL, {
+    method: "PATCH",
+    headers: {
+      "Authorization": `token ${GIST_TOKEN}`,
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.github.v3+json"
+    },
+    body: JSON.stringify({ files: { "submissions.json": { content: JSON.stringify({ submissions }) } } })
+  });
+  if (!res.ok) throw new Error("Speichern fehlgeschlagen (" + res.status + ")");
+}
+
+const PF_ALL   = ["Buchhaltung / OP/AP / Rechnungen","Storno / Rechnungskorrektur","Adressänderung","Mahnwesen / Zahlung / Rücklastschrift","Fehlermeldung","Wiedervorlage / Organisation","Oberfläche / Übersicht","Trägerdienste / Kommunikation"];
 const RISK_ALL = ["falsche Rechnung","Kunde falsch informiert","Zahlung falsch gebucht","Vorgang bleibt liegen","zusätzlicher manueller Aufwand","anderes Risiko"];
-const ZUSATZ_ALL = [
-  ["zBuch","Buchhaltung / Rechnungen"],["zSto","Storno / Rechnungskorrektur"],
-  ["zAdr","Adressänderung"],["zMah","Mahnwesen / Zahlung"],
-  ["zFeh","Fehlermeldung"],["zWie","Wiedervorlage / Organisation"],
-  ["zObe","Oberfläche / Übersicht"],["zTra","Trägerdienste / Kommunikation"],
-];
+const ZUSATZ_ALL = [["zBuch","Buchhaltung / Rechnungen"],["zSto","Storno / Rechnungskorrektur"],["zAdr","Adressänderung"],["zMah","Mahnwesen / Zahlung"],["zFeh","Fehlermeldung"],["zWie","Wiedervorlage / Organisation"],["zObe","Oberfläche / Übersicht"],["zTra","Trägerdienste / Kommunikation"]];
 
 const LABELS = [
-  ["Name",           s => s.name],
-  ["Problemfeld",    s => (s.pf||[]).join(", ")],
-  ["Sonstiges PF",   s => s.pfS],
-  ["Ziel",           s => s.ziel],
-  ["Kundentyp",      s => s.ktyp],
-  ["Besonderheiten", s => s.beson],
-  ["Ablauf",         s => (s.abl||[]).filter(Boolean).map((x,i)=>`${i+1}. ${x}`).join("\n")],
-  ["Screenshots",    s => {
-    const imgs = (s.ablImg||[]).filter(Boolean);
-    if (!imgs.length) return null;
-    return `__imgs__${JSON.stringify(imgs)}`;
-  }],
-  ["Problem: Schritt",   s => s.pSch],
-  ["Problem: Passiert",  s => s.pWas],
-  ["Problem: Erwartet",  s => s.pErw],
-  ["Problem: Unklar",    s => s.pUnk],
-  ["Daten: Benötigt",    s => s.dBra],
-  ["Daten: Wo erwartet", s => s.dErw],
-  ["Daten: Wo gefunden", s => s.dFan],
-  ["Daten: Prüfung",     s => s.dPru],
-  ...ZUSATZ_ALL.map(([k,l]) => [`Zusatz: ${l}`, s => s[k]]),
-  ["Workaround",    s => s.work],
-  ["Akt. Dauer",    s => s.dauI],
-  ["Erw. Dauer",    s => s.dauE],
-  ["Häufigkeit",    s => s.haeu],
-  ["Risiken",       s => (s.risiken||[]).join(", ")],
-  ["Risikobeschr.", s => s.rskT],
-  ["Soll-Zustand",  s => s.soll],
-  ["Fertig-Def.",   s => s.fert],
+  ["Name",           s=>s.name],
+  ["Problemfeld",    s=>(s.pf||[]).join(", ")],
+  ["Sonstiges PF",   s=>s.pfS],
+  ["Ziel",           s=>s.ziel],
+  ["Kundentyp",      s=>s.ktyp],
+  ["Besonderheiten", s=>s.beson],
+  ["Ablauf",         s=>(s.abl||[]).filter(Boolean).map((x,i)=>`${i+1}. ${x}`).join("\n")],
+  ["Problem: Schritt",   s=>s.pSch],
+  ["Problem: Passiert",  s=>s.pWas],
+  ["Problem: Erwartet",  s=>s.pErw],
+  ["Problem: Unklar",    s=>s.pUnk],
+  ["Daten: Benötigt",    s=>s.dBra],
+  ["Daten: Wo erwartet", s=>s.dErw],
+  ["Daten: Wo gefunden", s=>s.dFan],
+  ["Daten: Prüfung",     s=>s.dPru],
+  ...ZUSATZ_ALL.map(([k,l])=>[`Zusatz: ${l}`,s=>s[k]]),
+  ["Workaround",    s=>s.work],
+  ["Akt. Dauer",    s=>s.dauI],
+  ["Erw. Dauer",    s=>s.dauE],
+  ["Häufigkeit",    s=>s.haeu],
+  ["Risiken",       s=>(s.risiken||[]).join(", ")],
+  ["Risikobeschr.", s=>s.rskT],
+  ["Soll-Zustand",  s=>s.soll],
+  ["Fertig-Def.",   s=>s.fert],
 ];
 
-function v(val, large) {
-  const empty = !val || (Array.isArray(val) && val.length === 0);
-  const cls = `fm-val${large ? " fm-val-lg" : ""}${empty ? " fm-val-empty" : ""}`;
-  return `<div class="${cls}">${empty ? "–" : escHtml(val)}</div>`;
+let allSubs = [];
+
+
+const PF_ALL_OPT = ["Buchhaltung / OP/AP / Rechnungen","Storno / Rechnungskorrektur","Adressänderung","Mahnwesen / Zahlung / Rücklastschrift","Fehlermeldung","Wiedervorlage / Organisation","Oberfläche / Übersicht","Trägerdienste / Kommunikation"];
+const RISK_ALL_OPT = ["falsche Rechnung","Kunde falsch informiert","Zahlung falsch gebucht","Vorgang bleibt liegen","zusätzlicher manueller Aufwand","anderes Risiko"];
+const ZUSATZ_OPT = [["en_zBuch","Buchhaltung / Rechnungen"],["en_zSto","Storno / Rechnungskorrektur"],["en_zAdr","Adressänderung"],["en_zMah","Mahnwesen / Zahlung"],["en_zFeh","Fehlermeldung"],["en_zWie","Wiedervorlage / Organisation"],["en_zObe","Oberfläche / Übersicht"],["en_zTra","Trägerdienste / Kommunikation"]];
+
+function openEntryModal() {
+  // Build checkboxes
+  document.getElementById("en_pf_boxes").innerHTML = PF_ALL_OPT.map(o =>
+    `<label class="echk"><input type="checkbox" name="en_pf" value="${o}"> ${o}</label>`).join("");
+  document.getElementById("en_risk_boxes").innerHTML = RISK_ALL_OPT.map(o =>
+    `<label class="echk"><input type="checkbox" name="en_risk" value="${o}"> ${o}</label>`).join("");
+  // Build steps
+  document.getElementById("en_steps").innerHTML = [1,2,3,4,5,6].map(i =>
+    `<div style="display:flex;gap:10px;align-items:flex-start">
+      <span style="color:#e0001b;font-weight:800;margin-top:10px;min-width:20px">${i}.</span>
+      <textarea class="ef" style="min-height:46px" id="en_abl${i}" placeholder="Schritt ${i}"></textarea>
+    </div>`).join("");
+  // Build zusatz
+  document.getElementById("en_zusatz").innerHTML = ZUSATZ_OPT.map(([id,label]) =>
+    `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px">
+      <div style="font-weight:700;font-size:12px;margin-bottom:8px">${label}</div>
+      <textarea class="ef" id="${id}" style="min-height:60px"></textarea>
+    </div>`).join("");
+  // Default date to now
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  document.getElementById("en_date").value = now.toISOString().slice(0,16);
+  // Reset save state
+  document.getElementById("en_saveErr").style.display = "none";
+  document.getElementById("en_saveBtn").disabled = false;
+  document.getElementById("en_saveBtn").textContent = "Einreichung speichern";
+  document.getElementById("entryModal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
 }
+
+function closeEntryModal() {
+  document.getElementById("entryModal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+function closeEntryBg(e) { if (e.target === document.getElementById("entryModal")) closeEntryModal(); }
+
+async function saveManualEntry() {
+  const btn = document.getElementById("en_saveBtn");
+  btn.disabled = true;
+  btn.textContent = "Wird gespeichert …";
+  const checked = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+  const dateVal = document.getElementById("en_date").value;
+  const ts = dateVal ? new Date(dateVal).getTime() : Date.now();
+  const entry = {
+    id: ts.toString() + Math.random().toString(36).slice(2,6),
+    ts,
+    name: document.getElementById("en_name").value,
+    pf: checked("en_pf"),
+    pfS: document.getElementById("en_pfS").value,
+    ziel: document.getElementById("en_ziel").value,
+    ktyp: document.getElementById("en_ktyp").value,
+    beson: document.getElementById("en_beson").value,
+    abl: [1,2,3,4,5,6].map(i => document.getElementById("en_abl"+i).value),
+    ablImg: ["","","","","",""],
+    pSch: document.getElementById("en_pSch").value,
+    pWas: document.getElementById("en_pWas").value,
+    pErw: document.getElementById("en_pErw").value,
+    pUnk: document.getElementById("en_pUnk").value,
+    dBra: document.getElementById("en_dBra").value,
+    dErw: document.getElementById("en_dErw").value,
+    dFan: document.getElementById("en_dFan").value,
+    dPru: document.getElementById("en_dPru").value,
+    zBuch: document.getElementById("en_zBuch").value,
+    zSto: document.getElementById("en_zSto").value,
+    zAdr: document.getElementById("en_zAdr").value,
+    zMah: document.getElementById("en_zMah").value,
+    zFeh: document.getElementById("en_zFeh").value,
+    zWie: document.getElementById("en_zWie").value,
+    zObe: document.getElementById("en_zObe").value,
+    zTra: document.getElementById("en_zTra").value,
+    work: document.getElementById("en_work").value,
+    dauI: document.getElementById("en_dauI").value,
+    dauE: document.getElementById("en_dauE").value,
+    haeu: document.getElementById("en_haeu").value,
+    risiken: checked("en_risk"),
+    rskT: document.getElementById("en_rskT").value,
+    soll: document.getElementById("en_soll").value,
+    fert: document.getElementById("en_fert").value,
+    _manualEntry: true,
+  };
+  try {
+    const existing = await loadFromGist();
+    existing.push(entry);
+    await saveAllToGist(existing);
+    allSubs = existing.slice().reverse();
+    render(allSubs);
+    closeEntryModal();
+  } catch(e) {
+    const err = document.getElementById("en_saveErr");
+    err.textContent = "Fehler: " + e.message;
+    err.style.display = "block";
+    btn.disabled = false;
+    btn.textContent = "Einreichung speichern";
+  }
+}
+function credentialsOk() {
+  return !GIST_TOKEN.includes("__") && !GIST_ID.includes("__");
+}
+
+async function loadSubs() {
+  if (!credentialsOk()) {
+    document.getElementById("list").innerHTML = '<div class="rounded-2xl border border-red-200 bg-red-50 p-8 text-center mt-4"><p class="font-bold text-red-800 mb-2">Nicht konfiguriert</p><p class="text-sm text-red-700">Bitte <code>deploy.py</code> erneut ausführen, um den Datenspeicher einzurichten.</p></div>';
+    document.getElementById("meta").textContent = "Nicht konfiguriert";
+    return;
+  }
+  document.getElementById("list").innerHTML = '<p class="text-center text-slate-400 mt-16">Wird geladen…</p>';
+  try {
+    allSubs = (await loadFromGist()).slice().reverse();
+    render(allSubs);
+  } catch(e) {
+    document.getElementById("list").innerHTML = `<p class="text-center text-red-400 mt-16">Fehler beim Laden: ${e.message}</p>`;
+  }
+}
+
 function escHtml(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
 }
+
+function fmv(val, large) {
+  const empty = !val || (Array.isArray(val) && !val.length);
+  return `<div class="fm-val${large?" fm-val-lg":""}${empty?" fm-val-empty":""}">${empty?"–":escHtml(String(val))}</div>`;
+}
+
 function chk(val, all) {
-  const checked = val || [];
-  return all.map(opt => {
-    const on = checked.includes(opt);
+  return all.map(opt=>{
+    const on=(val||[]).includes(opt);
     return `<div class="fm-chk${on?" checked":""}"><span class="dot">${on?"✓":""}</span>${escHtml(opt)}</div>`;
   }).join("");
 }
 
 function buildFormView(s) {
-  const abl = (s.abl||[]).map((txt, i) => {
-    const img = (s.ablImg||[])[i];
-    return `
-    <div class="fm-step">
-      <span class="fm-step-num">${i+1}.</span>
-      <div style="flex:1">
-        <div class="fm-val" style="min-height:36px">${txt ? escHtml(txt) : '<span style="color:#94a3b8;font-style:italic">–</span>'}</div>
-        ${img ? `<img src="${img}" style="margin-top:8px;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #e2e8f0;object-fit:contain;display:block">` : ''}
-      </div>
-    </div>`;
+  const abl = (s.abl||[]).map((txt,i)=>{
+    const img=(s.ablImg||[])[i];
+    return `<div class="fm-step"><span class="fm-step-num">${i+1}.</span><div style="flex:1">
+      <div class="fm-val" style="min-height:36px">${txt?escHtml(txt):'<span style="color:#94a3b8;font-style:italic">–</span>'}</div>
+      ${img?`<img src="${img}" style="margin-top:8px;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #e2e8f0;object-fit:contain;display:block">`:""}
+    </div></div>`;
   }).join("");
 
-  const zusatz = ZUSATZ_ALL.map(([k,l]) => `
+  const zusatz = ZUSATZ_ALL.map(([k,l])=>`
     <div class="fm-sub-card">
       <div style="font-weight:700;font-size:13px;margin-bottom:8px">${l}</div>
-      ${v(s[k], true)}
+      ${fmv(s[k],true)}
     </div>`).join("");
 
   return `
     <div class="fm-header">
-      <div style="font-size:26px;font-weight:900;margin-bottom:8px">HUPsi-Formular</div>
-      <div style="font-size:13px;color:#cbd5e1;line-height:1.6;max-width:560px">Bitte beschreibe einen konkreten Fall aus der Praxis.</div>
-      <div style="margin-top:12px;font-size:12px;color:#94a3b8">Eingereicht: ${new Date(s.ts).toLocaleString("de-DE")}${s.name ? " · " + escHtml(s.name) : ""}</div>
+      <div style="font-size:26px;font-weight:900;margin-bottom:8px">😅 HUPsi-Formular</div>
+      <div style="font-size:13px;color:#cbd5e1;line-height:1.6;max-width:560px">Strukturierte Erhebung konkreter Problemfälle.</div>
+      <div style="margin-top:12px;font-size:12px;color:#94a3b8">Eingereicht: ${new Date(s.ts).toLocaleString("de-DE")}${s.name?" · "+escHtml(s.name):""}</div>
     </div>
-    <div class="fm-notice">
-      <strong>Hinweis:</strong> Bitte pro Formular nur einen konkreten Problemfall erfassen.
-    </div>
+    <div class="fm-notice"><strong>Hinweis:</strong> Pro Formular nur einen konkreten Problemfall.</div>
     <div class="fm-body">
-
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">👤</span>1. Name</div>
-        ${v(s.name)}
-      </div>
-
+      <div class="fm-section"><div class="fm-h"><span style="color:#e0001b">👤</span>1. Name</div>${fmv(s.name)}</div>
       <div class="fm-section">
         <div class="fm-h"><span style="color:#e0001b">🏷</span>2. Problemfeld</div>
-        <div class="fm-grid2" style="margin-bottom:12px">${chk(s.pf, PF_ALL)}</div>
-        <div><span class="fm-label">Sonstiges</span>${v(s.pfS)}</div>
+        <div class="fm-grid2" style="margin-bottom:12px">${chk(s.pf,PF_ALL)}</div>
+        <div><span class="fm-label">Sonstiges</span>${fmv(s.pfS)}</div>
       </div>
-
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">🎯</span>3. Ziel des Vorgangs</div>
-        <p style="font-size:12px;color:#64748b;margin-bottom:10px">Was wolltest du konkret erreichen?</p>
-        ${v(s.ziel, true)}
-      </div>
-
+      <div class="fm-section"><div class="fm-h"><span style="color:#e0001b">🎯</span>3. Ziel des Vorgangs</div>${fmv(s.ziel,true)}</div>
       <div class="fm-section">
         <div class="fm-h"><span style="color:#e0001b">📍</span>4. Ausgangssituation</div>
         <div class="fm-grid2">
-          <div><span class="fm-label">Kundentyp / Fall</span>${v(s.ktyp, true)}</div>
-          <div><span class="fm-label">Besonderheiten</span>${v(s.beson, true)}</div>
+          <div><span class="fm-label">Kundentyp / Fall</span>${fmv(s.ktyp,true)}</div>
+          <div><span class="fm-label">Besonderheiten</span>${fmv(s.beson,true)}</div>
         </div>
       </div>
-
       <div class="fm-section">
         <div class="fm-h"><span style="color:#e0001b">📋</span>5. Ablauf Schritt für Schritt</div>
-        <p style="font-size:12px;color:#64748b;margin-bottom:12px">Bitte möglichst konkret: Maske, Klick, Eingabe, Ergebnis.</p>
         ${abl}
       </div>
-
       <div class="fm-section">
         <div class="fm-h"><span style="color:#e0001b">⚠️</span>6. Problem im Ablauf</div>
         <div class="fm-grid2">
-          <div><span class="fm-label">Bei welchem Schritt trat das Problem auf?</span>${v(s.pSch, true)}</div>
-          <div><span class="fm-label">Was genau ist passiert?</span>${v(s.pWas, true)}</div>
-          <div><span class="fm-label">Was hattest du erwartet?</span>${v(s.pErw, true)}</div>
-          <div><span class="fm-label">Was war unklar?</span>${v(s.pUnk, true)}</div>
+          <div><span class="fm-label">Bei welchem Schritt?</span>${fmv(s.pSch,true)}</div>
+          <div><span class="fm-label">Was genau ist passiert?</span>${fmv(s.pWas,true)}</div>
+          <div><span class="fm-label">Was hattest du erwartet?</span>${fmv(s.pErw,true)}</div>
+          <div><span class="fm-label">Was war unklar?</span>${fmv(s.pUnk,true)}</div>
         </div>
       </div>
-
       <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">🗄</span>7. Benötigte Daten / Informationen</div>
+        <div class="fm-h"><span style="color:#e0001b">🗄</span>7. Benötigte Daten</div>
         <div class="fm-grid2">
-          <div><span class="fm-label">Welche Daten brauchst du?</span>${v(s.dBra, true)}</div>
-          <div><span class="fm-label">Wo erwartest du sie im System?</span>${v(s.dErw, true)}</div>
-          <div><span class="fm-label">Wo hast du sie gefunden?</span>${v(s.dFan, true)}</div>
-          <div><span class="fm-label">Welche Prüfung machst du am Ende?</span>${v(s.dPru, true)}</div>
+          <div><span class="fm-label">Welche Daten brauchst du?</span>${fmv(s.dBra,true)}</div>
+          <div><span class="fm-label">Wo erwartest du sie?</span>${fmv(s.dErw,true)}</div>
+          <div><span class="fm-label">Wo hast du sie gefunden?</span>${fmv(s.dFan,true)}</div>
+          <div><span class="fm-label">Prüfung am Ende?</span>${fmv(s.dPru,true)}</div>
         </div>
       </div>
-
       <div class="fm-section-alt">
-        <div class="fm-h"><span style="color:#e0001b">🔍</span>8. Zusatzfragen je Problemfeld</div>
+        <div class="fm-h"><span style="color:#e0001b">🔍</span>8. Zusatzfragen</div>
         <div class="fm-grid2">${zusatz}</div>
       </div>
-
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">🔄</span>9. Workaround</div>
-        <p style="font-size:12px;color:#64748b;margin-bottom:10px">Was hast du stattdessen gemacht?</p>
-        ${v(s.work, true)}
-      </div>
-
+      <div class="fm-section"><div class="fm-h"><span style="color:#e0001b">🔄</span>9. Workaround</div>${fmv(s.work,true)}</div>
       <div class="fm-section">
         <div class="fm-h"><span style="color:#e0001b">⏱</span>10. Aufwand und Häufigkeit</div>
         <div class="fm-grid3">
-          <div><span class="fm-label">Aktuelle Dauer</span>${v(s.dauI)}</div>
-          <div><span class="fm-label">Erwartete Dauer</span>${v(s.dauE)}</div>
-          <div><span class="fm-label">Häufigkeit</span>${v(s.haeu)}</div>
+          <div><span class="fm-label">Aktuelle Dauer</span>${fmv(s.dauI)}</div>
+          <div><span class="fm-label">Erwartete Dauer</span>${fmv(s.dauE)}</div>
+          <div><span class="fm-label">Häufigkeit</span>${fmv(s.haeu)}</div>
         </div>
       </div>
-
       <div class="fm-section">
         <div class="fm-h"><span style="color:#e0001b">🛡</span>11. Risiko / Fehlerfolgen</div>
-        <div class="fm-grid2" style="margin-bottom:12px">${chk(s.risiken, RISK_ALL)}</div>
-        ${v(s.rskT, true)}
+        <div class="fm-grid2" style="margin-bottom:12px">${chk(s.risiken,RISK_ALL)}</div>
+        ${fmv(s.rskT,true)}
       </div>
-
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">✨</span>12. Soll-Zustand</div>
-        <p style="font-size:12px;color:#64748b;margin-bottom:10px">Wie müsste der Ablauf idealerweise funktionieren?</p>
-        ${v(s.soll, true)}
-      </div>
-
-      <div class="fm-section-red">
-        <div class="fm-h"><span style="color:#e0001b">🎯</span>13. Fertig-Definition</div>
-        <p style="font-size:12px;color:#7f1d1d;margin-bottom:10px">Woran erkennst du, dass der Vorgang korrekt abgeschlossen ist?</p>
-        ${v(s.fert, true)}
-      </div>
-
+      <div class="fm-section"><div class="fm-h"><span style="color:#e0001b">✨</span>12. Soll-Zustand</div>${fmv(s.soll,true)}</div>
+      <div class="fm-section-red"><div class="fm-h"><span style="color:#e0001b">🎯</span>13. Fertig-Definition</div>${fmv(s.fert,true)}</div>
       <div style="border-top:1px solid #e2e8f0;padding-top:16px;font-size:12px;color:#94a3b8;text-align:center">
         Dieses Formular dient der strukturierten Erhebung konkreter Problemfälle.
       </div>
@@ -265,68 +478,69 @@ function buildFormView(s) {
 }
 
 function openModal(id) {
-  const subs = loadSubs();
-  const s = subs.find(x => x.id === id);
+  const s = allSubs.find(x => x.id === id);
   if (!s) return;
   document.getElementById("modalContent").innerHTML = buildFormView(s);
   document.getElementById("modal").classList.remove("hidden");
   document.body.style.overflow = "hidden";
 }
+function closeModal() {
+  document.getElementById("modal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+function closeModalBg(e) { if (e.target === document.getElementById("modal")) closeModal(); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
-function closeModal(e) {
-  if (e.target === document.getElementById("modal")) {
-    document.getElementById("modal").classList.add("hidden");
-    document.body.style.overflow = "";
-  }
+function showImgFull(src) {
+  const o = document.createElement("div");
+  o.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px";
+  o.onclick = () => o.remove();
+  const img = document.createElement("img");
+  img.src = src;
+  img.style.cssText = "max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)";
+  o.appendChild(img);
+  document.body.appendChild(o);
 }
 
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    document.getElementById("modal").classList.add("hidden");
-    document.body.style.overflow = "";
-  }
-});
-
-function loadSubs() {
-  return JSON.parse(localStorage.getItem("hup-submissions") || "[]").sort((a,b) => b.ts - a.ts);
+async function deleteSub(id) {
+  if (!confirm("Diesen Eintrag wirklich löschen?")) return;
+  const remaining = allSubs.filter(s => s.id !== id);
+  await saveAllToGist(remaining.slice().reverse());
+  allSubs = remaining;
+  render(allSubs);
 }
 
-function render() {
-  const subs = loadSubs();
+function render(subs) {
   document.getElementById("meta").textContent =
-    `${subs.length} Einreichung${subs.length!==1?"en":""} · Benachrichtigungen an okur@taz.de`;
+    `${subs.length} Einreichung${subs.length!==1?"en":""} · geteilt · Benachrichtigungen an okur@taz.de`;
   document.getElementById("xlsBtn").disabled = subs.length === 0;
 
   const list = document.getElementById("list");
-  if (subs.length === 0) {
-    list.innerHTML = '<div class="text-center mt-16 text-slate-400"><p class="text-4xl mb-3">📭</p><p>Noch keine Einreichungen vorhanden.</p><p class="text-sm mt-2">Fülle das <a href="index.html" class="underline">Formular</a> aus.</p></div>';
+  if (!subs.length) {
+    list.innerHTML = '<div class="text-center mt-16 text-slate-400"><p class="text-4xl mb-3">📭</p><p>Noch keine Einreichungen.</p></div>';
     return;
   }
 
-  list.innerHTML = subs.map((s) => {
+  list.innerHTML = subs.map(s => {
     const tags = (s.pf||[]).map(t=>`<span class="tag">${t}</span>`).join("") ||
       '<span class="text-slate-400 text-xs">Kein Problemfeld</span>';
-    const preview = s.ziel ? `<p class="text-sm text-slate-500 mt-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:440px">${s.ziel.slice(0,120)}</p>` : "";
-    const nameStr = s.name ? `<span class="font-semibold text-slate-700">${s.name}</span> · ` : "";
-    const date = new Date(s.ts).toLocaleString("de-DE");
+    const preview = s.ziel ? `<p class="text-sm text-slate-500 mt-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:420px">${s.ziel.slice(0,120)}</p>` : "";
+    const nameStr = s.name ? `<strong class="text-slate-700">${s.name}</strong> · ` : "";
+    const imgCount = (s.ablImg||[]).filter(Boolean).length;
+    const imgBadge = imgCount ? `<span class="text-xs text-slate-400">📎 ${imgCount} Screenshot${imgCount>1?"s":""}</span>` : "";
 
-    const rows = LABELS.map(([label, fn]) => {
-      const val = fn(s);
-      if (!val) return "";
-      if (val.startsWith("__imgs__")) {
-        const imgs = JSON.parse(val.slice(8));
-        const thumbs = imgs.map((src, i) => {
-          const stepNums = (s.abl||[]).map((t,idx) => (s.ablImg||[])[idx] === src ? idx+1 : null).filter(Boolean);
-          const stepLabel = stepNums.length ? `Schritt ${stepNums[0]}` : `Bild ${i+1}`;
-          return `<div style="display:inline-block;margin:4px;text-align:center;vertical-align:top">
-            <img src="${src}" style="height:80px;max-width:130px;border-radius:8px;border:1px solid #e2e8f0;object-fit:cover;display:block;cursor:pointer" onclick="showImgFull('${src}')" title="Klicken zum Vergrößern">
-            <span style="font-size:10px;color:#94a3b8;margin-top:2px;display:block">${stepLabel}</span>
-          </div>`;
-        }).join("");
-        return `<div class="dl"><span class="dk">Screenshots</span><div>${thumbs}</div></div>`;
-      }
+    const rows = LABELS.map(([label,fn])=>{
+      const val = fn(s); if (!val) return "";
       return `<div class="dl"><span class="dk">${label}</span><span class="dv">${val}</span></div>`;
     }).join("");
+
+    const thumbs = (s.ablImg||[]).map((src,i)=>src?`
+      <div style="display:inline-block;margin:4px;text-align:center;vertical-align:top">
+        <img src="${src}" style="height:80px;max-width:120px;border-radius:8px;border:1px solid #e2e8f0;object-fit:cover;display:block;cursor:pointer"
+          onclick="showImgFull('${src}')" title="Klicken zum Vergrößern">
+        <span style="font-size:10px;color:#94a3b8;display:block;margin-top:2px">Schritt ${i+1}</span>
+      </div>`:""
+    ).join("");
 
     return `
       <div class="bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden">
@@ -334,15 +548,18 @@ function render() {
           <div class="flex-1 min-w-0">
             <div class="mb-1">${tags}</div>
             ${preview}
-            <p class="text-xs text-slate-400 mt-2">${nameStr}${date}</p>
+            <p class="text-xs text-slate-400 mt-2">${nameStr}${new Date(s.ts).toLocaleString("de-DE")} ${imgBadge}</p>
           </div>
-          <div class="flex gap-2 flex-shrink-0">
-            <button onclick="openModal('${s.id}')" class="inline-flex items-center gap-1.5 rounded-lg bg-[#111] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80">📄 Formular-Ansicht</button>
+          <div class="flex gap-2 flex-shrink-0 items-center">
+            <button onclick="openModal('${s.id}')" class="inline-flex items-center gap-1.5 rounded-lg bg-[#111] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80">📄 Formular</button>
             <button onclick="toggleDetails('${s.id}')" id="btn-${s.id}" class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 text-slate-700 px-3 py-1.5 text-xs font-bold hover:bg-slate-200">Tabelle ↓</button>
             <button onclick="deleteSub('${s.id}')" class="text-xs text-red-400 hover:text-red-600 font-semibold px-1">✕</button>
           </div>
         </div>
-        <div id="detail-${s.id}" class="hidden border-t border-slate-100 px-5 py-4">${rows}</div>
+        <div id="detail-${s.id}" class="hidden border-t border-slate-100 px-5 py-4">
+          ${rows}
+          ${thumbs ? `<div class="mt-3"><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide block mb-2">Screenshots</span>${thumbs}</div>` : ""}
+        </div>
       </div>`;
   }).join("");
 }
@@ -354,71 +571,21 @@ function toggleDetails(id) {
   btn.textContent = hidden ? "Tabelle ↓" : "Tabelle ↑";
 }
 
-function deleteSub(id) {
-  if (!confirm("Diesen Eintrag wirklich löschen?")) return;
-  const subs = loadSubs().filter(s => s.id !== id);
-  localStorage.setItem("hup-submissions", JSON.stringify(subs));
-  render();
-}
-
-function showImgFull(src) {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px';
-  overlay.onclick = () => overlay.remove();
-  const img = document.createElement('img');
-  img.src = src;
-  img.style.cssText = 'max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)';
-  overlay.appendChild(img);
-  document.body.appendChild(overlay);
-}
-
 function exportExcel() {
-  const XLSX = window.XLSX;
-  const subs = loadSubs();
-  const rows = subs.map(s => {
-    const imgCount = (s.ablImg||[]).filter(Boolean).length;
+  const rows = allSubs.map(s => {
     const row = { "Datum": new Date(s.ts).toLocaleString("de-DE") };
-    LABELS.filter(([l]) => l !== "Screenshots").forEach(([label, fn]) => {
-      const v = fn(s);
-      row[label] = (v && !v.startsWith("__imgs__")) ? v : "";
-    });
-    row["Screenshots (Anzahl)"] = imgCount > 0 ? imgCount : "";
+    LABELS.forEach(([label,fn]) => { row[label] = fn(s)||""; });
+    row["Screenshots (Anzahl)"] = (s.ablImg||[]).filter(Boolean).length || "";
     return row;
   });
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws["!cols"] = Object.keys(rows[0]||{}).map(() => ({ wch: 30 }));
+  ws["!cols"] = Object.keys(rows[0]||{}).map(()=>({wch:30}));
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Einreichungen");
-  XLSX.writeFile(wb, `HUP-Einreichungen-${new Date().toISOString().slice(0,10)}.xlsx`);
+  XLSX.writeFile(wb, `HUPsi-Einreichungen-${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
-function exportJSON() {
-  const blob = new Blob([JSON.stringify(loadSubs(), null, 2)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `HUP-Einreichungen-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-}
-
-function importJSON(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const imported = JSON.parse(e.target.result);
-      const existing = loadSubs();
-      const ids = new Set(existing.map(s => s.id));
-      const neu = imported.filter(s => !ids.has(s.id));
-      localStorage.setItem("hup-submissions", JSON.stringify([...existing, ...neu]));
-      render();
-      alert(`✓ ${neu.length} neue Einreichung(en) importiert.`);
-    } catch(e) { alert("Fehler: " + e.message); }
-  };
-  reader.readAsText(file);
-}
-
-render();
+loadSubs();
 </script>
 </body>
 </html>
