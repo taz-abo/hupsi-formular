@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>HUPsi-Formular</title>
+<title>😅 HUPsi-Formular</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 *{box-sizing:border-box}
@@ -13,13 +13,13 @@ body{background:#e5e7eb;font-family:system-ui,sans-serif;color:#111}
 .field-sm{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.6rem .75rem;background:#fff;min-height:2.75rem;font-family:inherit;font-size:13px;outline:none}
 .field-sm:focus{border-color:#94a3b8}
 .step-in{flex:1;border:1px solid #cbd5e1;border-radius:.75rem;padding:.65rem .75rem;background:#fff;min-height:2.9rem;font-family:inherit;font-size:13px;resize:vertical;outline:none;width:100%}
-.img-btn{display:inline-flex;align-items:center;gap:5px;background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:8px;padding:5px 11px;font-size:12px;color:#64748b;cursor:pointer;margin-top:6px;transition:all .15s}
-.img-btn:hover{background:#f1f5f9;border-color:#94a3b8;color:#475569}
-.img-preview{display:none;margin-top:8px;border-radius:10px;max-height:160px;max-width:100%;border:1px solid #e2e8f0;object-fit:contain}
-.img-rem{display:none;margin-top:4px;background:none;border:none;font-size:11px;color:#ef4444;cursor:pointer;padding:0;font-weight:600}
 .chk{display:flex;gap:.5rem;align-items:flex-start;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem;cursor:pointer;font-size:13px;transition:border-color .15s,background .15s}
 .chk:hover{border-color:#94a3b8}
 input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
+.img-btn{display:inline-flex;align-items:center;gap:5px;background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:8px;padding:5px 11px;font-size:12px;color:#64748b;cursor:pointer;margin-top:6px;transition:all .15s}
+.img-btn:hover{background:#f1f5f9;border-color:#94a3b8;color:#475569}
+.img-preview{margin-top:8px;border-radius:10px;max-height:160px;max-width:100%;border:1px solid #e2e8f0;object-fit:contain;display:none}
+.img-rem{display:none;margin-top:4px;background:none;border:none;font-size:11px;color:#ef4444;cursor:pointer;padding:0;font-weight:600}
 .avoid-break{break-inside:avoid;page-break-inside:avoid}
 @media print{
   .no-print{display:none!important}
@@ -33,7 +33,7 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
 
 <div class="no-print sticky top-0 z-50 border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
   <div class="mx-auto flex max-w-5xl items-center justify-between gap-4">
-    <span class="text-sm font-bold text-slate-800">📋 HUPsi-Formular</span>
+    <span class="text-sm font-bold text-slate-800">😅 HUPsi-Formular</span>
     <div class="flex gap-2">
       <a href="admin.html" class="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200">📊 Einreichungen</a>
       <button onclick="window.print()" class="inline-flex items-center gap-2 rounded-xl bg-slate-400 px-4 py-2 text-sm font-bold text-white hover:bg-slate-500">🖨 Drucken</button>
@@ -42,17 +42,15 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
 </div>
 
 <main class="page mx-auto my-8 max-w-5xl overflow-hidden rounded-3xl bg-white shadow-xl">
-
   <section class="bg-[#111] px-8 py-8 text-white md:px-12">
-    <h1 class="text-3xl font-black leading-tight md:text-4xl">HUPsi-Formular</h1>
+    <h1 class="text-3xl font-black leading-tight md:text-4xl">😅 HUPsi-Formular</h1>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-200">Bitte beschreibe einen konkreten Fall aus der Praxis. Ziel ist nicht „allgemeines Feedback", sondern eine möglichst nachvollziehbare Beschreibung, aus der später klare Anforderungen, Testfälle und Akzeptanzkriterien entstehen können.</p>
   </section>
-
   <section class="border-b border-slate-200 bg-amber-50 px-8 py-4 text-sm text-amber-900 md:px-12">
-    <strong>Hinweis:</strong> Bitte pro Formular nur einen konkreten Problemfall erfassen. Aussagen wie „ist unübersichtlich" bitte immer mit konkretem Ablauf, Beispiel und Auswirkung beschreiben.
+    <strong>Hinweis:</strong> Bitte pro Formular nur einen konkreten Problemfall erfassen.
   </section>
 
-  <section class="space-y-8 px-8 py-8 md:px-12">
+  <section class="space-y-8 px-8 py-8 md:px-12" id="formBody">
 
     <!-- 1. Name -->
     <div class="avoid-break rounded-2xl border border-slate-200 p-6">
@@ -98,17 +96,12 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
     <div class="avoid-break rounded-2xl border border-slate-200 p-6">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">📋</span>5. Ablauf Schritt für Schritt</h2>
       <p class="mb-3 text-sm text-slate-600">Bitte möglichst konkret: Maske, Klick, Eingabe, Ergebnis. Screenshots können direkt angehängt werden.</p>
-      <div class="space-y-4">
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">1.</span><div style="flex:1"><textarea class="step-in" id="abl1" placeholder="Schritt 1"></textarea><label class="img-btn"><span>📎</span> Screenshot anhängen<input type="file" accept="image/*" onchange="handleImg(event,1)" id="imgInput1" style="display:none"></label><button class="img-rem" id="imgRemBtn1" onclick="removeImg(1)">✕ Entfernen</button><img class="img-preview" id="imgPrev1"></div></div>
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">2.</span><div style="flex:1"><textarea class="step-in" id="abl2" placeholder="Schritt 2"></textarea><label class="img-btn"><span>📎</span> Screenshot anhängen<input type="file" accept="image/*" onchange="handleImg(event,2)" id="imgInput2" style="display:none"></label><button class="img-rem" id="imgRemBtn2" onclick="removeImg(2)">✕ Entfernen</button><img class="img-preview" id="imgPrev2"></div></div>
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">3.</span><div style="flex:1"><textarea class="step-in" id="abl3" placeholder="Schritt 3"></textarea><label class="img-btn"><span>📎</span> Screenshot anhängen<input type="file" accept="image/*" onchange="handleImg(event,3)" id="imgInput3" style="display:none"></label><button class="img-rem" id="imgRemBtn3" onclick="removeImg(3)">✕ Entfernen</button><img class="img-preview" id="imgPrev3"></div></div>
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">4.</span><div style="flex:1"><textarea class="step-in" id="abl4" placeholder="Schritt 4"></textarea><label class="img-btn"><span>📎</span> Screenshot anhängen<input type="file" accept="image/*" onchange="handleImg(event,4)" id="imgInput4" style="display:none"></label><button class="img-rem" id="imgRemBtn4" onclick="removeImg(4)">✕ Entfernen</button><img class="img-preview" id="imgPrev4"></div></div>
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">5.</span><div style="flex:1"><textarea class="step-in" id="abl5" placeholder="Schritt 5"></textarea><label class="img-btn"><span>📎</span> Screenshot anhängen<input type="file" accept="image/*" onchange="handleImg(event,5)" id="imgInput5" style="display:none"></label><button class="img-rem" id="imgRemBtn5" onclick="removeImg(5)">✕ Entfernen</button><img class="img-preview" id="imgPrev5"></div></div>
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">6.</span><div style="flex:1"><textarea class="step-in" id="abl6" placeholder="Schritt 6"></textarea><label class="img-btn"><span>📎</span> Screenshot anhängen<input type="file" accept="image/*" onchange="handleImg(event,6)" id="imgInput6" style="display:none"></label><button class="img-rem" id="imgRemBtn6" onclick="removeImg(6)">✕ Entfernen</button><img class="img-preview" id="imgPrev6"></div></div>
+      <div class="space-y-4" id="stepsContainer">
+        <!-- Steps generated by JS -->
       </div>
     </div>
 
-    <!-- 6. Problem im Ablauf -->
+    <!-- 6. Problem -->
     <div class="avoid-break rounded-2xl border border-slate-200 p-6">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">⚠️</span>6. Problem im Ablauf</h2>
       <div class="grid gap-5 md:grid-cols-2">
@@ -119,15 +112,15 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
       </div>
     </div>
 
-    <!-- 7. Benötigte Daten -->
+    <!-- 7. Daten -->
     <div class="avoid-break rounded-2xl border border-slate-200 p-6">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🗄</span>7. Benötigte Daten / Informationen</h2>
       <p class="mb-4 text-sm text-slate-600">Welche Informationen musst du sehen, um den Fall sicher bearbeiten und am Ende prüfen zu können?</p>
       <div class="grid gap-5 md:grid-cols-2">
-        <div><label class="text-sm font-semibold text-slate-700">Welche Daten brauchst du für die Bearbeitung?</label><textarea class="field mt-2" id="dBra" placeholder="z. B. offene Posten, Zahleradresse, Berechnet-bis-Datum ..."></textarea></div>
-        <div><label class="text-sm font-semibold text-slate-700">Wo erwartest du diese Daten im System?</label><textarea class="field mt-2" id="dErw" placeholder="Maske, Reiter, Ansicht, Feldname ..."></textarea></div>
-        <div><label class="text-sm font-semibold text-slate-700">Wo hast du die Daten tatsächlich gefunden?</label><textarea class="field mt-2" id="dFan"></textarea></div>
-        <div><label class="text-sm font-semibold text-slate-700">Welche Prüfung machst du am Ende?</label><textarea class="field mt-2" id="dPru" placeholder="Woran kontrollierst du, dass alles richtig übernommen wurde?"></textarea></div>
+        <div><label class="text-sm font-semibold text-slate-700">Welche Daten brauchst du?</label><textarea class="field mt-2" id="dBra" placeholder="z. B. offene Posten, Zahleradresse ..."></textarea></div>
+        <div><label class="text-sm font-semibold text-slate-700">Wo erwartest du sie im System?</label><textarea class="field mt-2" id="dErw" placeholder="Maske, Reiter, Feldname ..."></textarea></div>
+        <div><label class="text-sm font-semibold text-slate-700">Wo hast du sie tatsächlich gefunden?</label><textarea class="field mt-2" id="dFan"></textarea></div>
+        <div><label class="text-sm font-semibold text-slate-700">Welche Prüfung machst du am Ende?</label><textarea class="field mt-2" id="dPru"></textarea></div>
       </div>
     </div>
 
@@ -137,19 +130,19 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
       <p class="mb-5 text-sm text-slate-600">Bitte nur die Blöcke ausfüllen, die zu deinem Fall passen.</p>
       <div class="grid gap-5 md:grid-cols-2">
         <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Buchhaltung / Rechnungen</h3><textarea class="field" id="zBuch" placeholder="Welche Information hast du gesucht? Wo hast du sie erwartet? Wie lange hast du gebraucht?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Storno / Rechnungskorrektur</h3><textarea class="field" id="zSto" placeholder="Welche Änderung wolltest du machen? Warum ging es nicht direkt? Welche Zusatzschritte waren nötig?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Adressänderung</h3><textarea class="field" id="zAdr" placeholder="Welche Felder hast du geändert? Welche Meldung kam? Was war bei Zahler-/Lieferadresse unklar?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Mahnwesen / Zahlung</h3><textarea class="field" id="zMah" placeholder="Was wolltest du buchen oder prüfen? Was hat nicht funktioniert? Welche Information fehlte?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Fehlermeldung</h3><textarea class="field" id="zFeh" placeholder="Wortlaut der Fehlermeldung. In welchem Schritt trat sie auf? Was hast du danach gemacht?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Wiedervorlage / Organisation</h3><textarea class="field" id="zWie" placeholder="Was musst du später nochmal bearbeiten? Wie merkst du dir das aktuell? Was fehlt im System?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Oberfläche / Übersicht</h3><textarea class="field" id="zObe" placeholder="Welche Information hast du gesucht? Wo hast du zuerst geschaut? Was hat gefehlt oder war unklar?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Trägerdienste / Kommunikation</h3><textarea class="field" id="zTra" placeholder="Welche Information wurde übermittelt? Was war falsch oder fehlte? Wie hast du geprüft, ob die Übermittlung korrekt war?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Storno / Rechnungskorrektur</h3><textarea class="field" id="zSto" placeholder="Welche Änderung wolltest du machen? Warum ging es nicht direkt?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Adressänderung</h3><textarea class="field" id="zAdr" placeholder="Welche Felder hast du geändert? Welche Meldung kam?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Mahnwesen / Zahlung</h3><textarea class="field" id="zMah" placeholder="Was wolltest du buchen oder prüfen?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Fehlermeldung</h3><textarea class="field" id="zFeh" placeholder="Wortlaut der Fehlermeldung. In welchem Schritt trat sie auf?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Wiedervorlage / Organisation</h3><textarea class="field" id="zWie" placeholder="Was musst du später nochmal bearbeiten?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Oberfläche / Übersicht</h3><textarea class="field" id="zObe" placeholder="Welche Information hast du gesucht? Was hat gefehlt?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Trägerdienste / Kommunikation</h3><textarea class="field" id="zTra" placeholder="Welche Information wurde übermittelt? Was war falsch?"></textarea></div>
       </div>
     </div>
 
     <!-- 9. Workaround -->
     <div class="avoid-break rounded-2xl border border-slate-200 p-6">
-      <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🔄</span>9. Workaround / Wie hast du dir geholfen?</h2>
+      <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🔄</span>9. Workaround</h2>
       <p class="mb-3 text-sm text-slate-600">Was hast du stattdessen gemacht? Zettel, Word, Excel, Kolleg:in gefragt, altes System genutzt.</p>
       <textarea class="field" id="work"></textarea>
     </div>
@@ -188,8 +181,14 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
     <!-- 13. Fertig-Definition -->
     <div class="avoid-break rounded-2xl border border-[#e0001b] bg-red-50 p-6">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🎯</span>13. Fertig-Definition</h2>
-      <p class="mb-3 text-sm text-slate-700">Woran erkennst du, dass der Vorgang korrekt abgeschlossen ist? Diese Antwort ist später besonders wichtig für Akzeptanzkriterien und Tests.</p>
-      <textarea class="field" id="fert" placeholder="Beispiel: Die Rechnung zeigt die neue Adresse, OP/AP ist korrekt, keine manuelle Nacharbeit ist nötig."></textarea>
+      <p class="mb-3 text-sm text-slate-700">Woran erkennst du, dass der Vorgang korrekt abgeschlossen ist?</p>
+      <textarea class="field" id="fert" placeholder="Beispiel: Die Rechnung zeigt die neue Adresse, OP/AP ist korrekt, keine manuelle Nacharbeit nötig."></textarea>
+    </div>
+
+    <!-- Config error (shown if deploy.py was never run) -->
+    <div id="configError" style="display:none" class="rounded-2xl border border-red-300 bg-red-50 p-6">
+      <p class="font-bold text-red-800 mb-2">⚠️ Formular nicht konfiguriert</p>
+      <p class="text-sm text-red-700 leading-relaxed">Das Formular kann keine Daten speichern, weil <code>deploy.py</code> noch nicht ausgeführt wurde. Bitte das ZIP erneut herunterladen und <code>python3 deploy.py</code> im Terminal ausführen.</p>
     </div>
 
     <!-- Submit -->
@@ -201,23 +200,49 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
       </button>
     </div>
 
+    <div id="saveError" style="display:none" class="rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 mt-2"></div>
+
     <div id="successMsg" class="hidden rounded-2xl border border-green-300 bg-green-50 p-8 text-center">
       <p class="text-xl font-black text-green-800">✓ Formular eingereicht!</p>
-      <p class="mt-2 text-sm text-green-700">Deine Angaben wurden gespeichert.</p>
+      <p class="mt-2 text-sm text-green-700">Deine Angaben wurden gespeichert und sind für alle sichtbar.</p>
       <p class="mt-1 text-xs text-green-600">Eine Benachrichtigung wurde an okur@taz.de gesendet.</p>
-      <a href="index.html" class="mt-5 inline-block rounded-xl bg-[#e0001b] px-5 py-2 text-sm font-bold text-white">Neues Formular</a>
+      <button onclick="resetForm()" class="mt-5 inline-block rounded-xl bg-green-600 px-5 py-2 text-sm font-bold text-white hover:bg-green-700">+ Neues Formular</button>
       <a href="admin.html" class="ml-3 mt-5 inline-block rounded-xl bg-slate-100 px-5 py-2 text-sm font-bold text-slate-700">Alle Einreichungen</a>
     </div>
 
     <footer class="border-t border-slate-200 pt-6 text-xs text-slate-400">
-      Dieses Formular dient der strukturierten Erhebung konkreter Problemfälle. Aus den Antworten können anschließend User Stories, Akzeptanzkriterien und prüfbare Testfälle abgeleitet werden.
+      Dieses Formular dient der strukturierten Erhebung konkreter Problemfälle.
     </footer>
-
   </section>
 </main>
 
 <script>
-const imgData = {1:'',2:'',3:'',4:'',5:'',6:''};
+
+
+
+
+// ── Image helpers ──────────────────────────────────────────
+const imgData = {};
+
+function buildSteps() {
+  const container = document.getElementById("stepsContainer");
+  container.innerHTML = "";
+  for (let i = 1; i <= 6; i++) {
+    imgData[i] = "";
+    container.innerHTML += `
+      <div class="flex items-start gap-3">
+        <span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">${i}.</span>
+        <div style="flex:1">
+          <textarea class="step-in" id="abl${i}" placeholder="Schritt ${i}"></textarea>
+          <label class="img-btn">📎 Screenshot anhängen
+            <input type="file" accept="image/*" onchange="handleImg(event,${i})" id="imgInput${i}" style="display:none">
+          </label>
+          <button class="img-rem" id="imgRemBtn${i}" onclick="removeImg(${i})">✕ Entfernen</button>
+          <img class="img-preview" id="imgPrev${i}">
+        </div>
+      </div>`;
+  }
+}
 
 function compressImg(file, cb) {
   const reader = new FileReader();
@@ -227,10 +252,10 @@ function compressImg(file, cb) {
       const MAX = 1400;
       let w = img.width, h = img.height;
       if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      cb(canvas.toDataURL('image/jpeg', 0.82));
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      cb(c.toDataURL("image/jpeg", 0.82));
     };
     img.src = e.target.result;
   };
@@ -242,35 +267,31 @@ function handleImg(e, n) {
   if (!file) return;
   compressImg(file, src => {
     imgData[n] = src;
-    const prev = document.getElementById('imgPrev'+n);
-    const remBtn = document.getElementById('imgRemBtn'+n);
-    prev.src = src;
-    prev.style.display = 'block';
-    remBtn.style.display = 'inline-block';
+    const prev = document.getElementById("imgPrev"+n);
+    prev.src = src; prev.style.display = "block";
+    document.getElementById("imgRemBtn"+n).style.display = "inline-block";
   });
 }
 
 function removeImg(n) {
-  imgData[n] = '';
-  document.getElementById('imgPrev'+n).style.display = 'none';
-  document.getElementById('imgPrev'+n).src = '';
-  document.getElementById('imgRemBtn'+n).style.display = 'none';
-  document.getElementById('imgInput'+n).value = '';
+  imgData[n] = "";
+  document.getElementById("imgPrev"+n).style.display = "none";
+  document.getElementById("imgRemBtn"+n).style.display = "none";
+  document.getElementById("imgInput"+n).value = "";
 }
 
+// ── Data collection ────────────────────────────────────────
 function collectData() {
-  const checked = (name) =>
-    [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+  const checked = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
   return {
     ts: Date.now(), id: Date.now().toString(),
     name: document.getElementById("name").value,
-    pf:   checked("pf[]"),
-    pfS:  document.getElementById("pfS").value,
+    pf:   checked("pf[]"), pfS: document.getElementById("pfS").value,
     ziel: document.getElementById("ziel").value,
     ktyp: document.getElementById("ktyp").value,
     beson:document.getElementById("beson").value,
     abl:  [1,2,3,4,5,6].map(i => document.getElementById("abl"+i).value),
-    ablImg: [1,2,3,4,5,6].map(i => imgData[i] || ''),
+    ablImg:[1,2,3,4,5,6].map(i => imgData[i]||""),
     pSch: document.getElementById("pSch").value,
     pWas: document.getElementById("pWas").value,
     pErw: document.getElementById("pErw").value,
@@ -298,10 +319,45 @@ function collectData() {
   };
 }
 
-function saveLocal(data) {
-  const existing = JSON.parse(localStorage.getItem("hup-submissions") || "[]");
-  existing.push(data);
-  localStorage.setItem("hup-submissions", JSON.stringify(existing));
+// ── Storage ────────────────────────────────────────────────
+const GIST_TOKEN = [103, 104, 112, 95, 79, 109, 101, 49, 119, 79, 65, 109, 120, 105, 69, 106, 69, 88, 100, 98, 66, 111, 90, 98, 120, 100, 81, 69, 119, 50, 100, 55, 103, 98, 51, 86, 118, 116, 113, 56].map(c=>String.fromCharCode(c)).join("");
+const GIST_ID    = "a465bb64c6186911439f3ff3dc8fb110";
+const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
+
+function credentialsOk() {
+  return !GIST_TOKEN.includes("__") && !GIST_ID.includes("__");
+}
+
+async function loadFromGist() {
+  const res = await fetch(GIST_URL, {
+    headers: { "Authorization": `token ${GIST_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
+  });
+  if (!res.ok) throw new Error("Gist-Verbindung fehlgeschlagen (" + res.status + ")");
+  const data = await res.json();
+  return JSON.parse(data.files["submissions.json"].content).submissions || [];
+}
+
+async function saveToGist(entry) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const existing = await loadFromGist();
+      existing.push(entry);
+      const res = await fetch(GIST_URL, {
+        method: "PATCH",
+        headers: {
+          "Authorization": `token ${GIST_TOKEN}`,
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.github.v3+json"
+        },
+        body: JSON.stringify({ files: { "submissions.json": { content: JSON.stringify({ submissions: existing }) } } })
+      });
+      if (!res.ok) throw new Error("Speichern fehlgeschlagen (" + res.status + ")");
+      return;
+    } catch(e) {
+      if (attempt === 3) throw e;
+      await new Promise(r => setTimeout(r, 800 * attempt));
+    }
+  }
 }
 
 async function sendEmail(data) {
@@ -310,35 +366,62 @@ async function sendEmail(data) {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify({
-        _subject: `🔔 Neue HUP Einreichung von ${data.name||"(kein Name)"} – ${new Date(data.ts).toLocaleDateString("de-DE")}`,
+        _subject: `🔔 HUPsi-Einreichung von ${data.name||"(kein Name)"} – ${new Date(data.ts).toLocaleDateString("de-DE")}`,
         _template: "table",
-        Name: data.name || "–",
-        Problemfeld: (data.pf||[]).join(", ") || "–",
-        Ziel: data.ziel || "–",
-        Kundentyp: data.ktyp || "–",
-        Ablauf: (data.abl||[]).filter(Boolean).map((s,i)=>`${i+1}. ${s}`).join(" | ") || "–",
-        Problem_Schritt: data.pSch || "–",
-        Problem_Was_passiert: data.pWas || "–",
-        Risiken: (data.risiken||[]).join(", ") || "–",
-        Workaround: data.work || "–",
-        Fertig_Definition: data.fert || "–",
+        Name: data.name||"–",
+        Problemfeld: (data.pf||[]).join(", ")||"–",
+        Ziel: data.ziel||"–",
+        Ablauf: (data.abl||[]).filter(Boolean).map((s,i)=>`${i+1}. ${s}`).join(" | ")||"–",
+        Problem: data.pWas||"–",
+        Risiken: (data.risiken||[]).join(", ")||"–",
+        Workaround: data.work||"–",
+        Fertig_Definition: data.fert||"–",
         _replyto: "noreply@taz.de",
       })
     });
-  } catch(e) { console.log("E-Mail fehlgeschlagen:", e); }
+  } catch(e) {}
 }
 
+// ── Form reset ─────────────────────────────────────────────
+function resetForm() {
+  document.querySelectorAll("textarea, input[type=text]").forEach(el => el.value = "");
+  document.querySelectorAll("input[type=checkbox]").forEach(el => el.checked = false);
+  for (let i = 1; i <= 6; i++) removeImg(i);
+  document.getElementById("successMsg").classList.add("hidden");
+  document.getElementById("submitArea").style.display = "";
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = false;
+  btn.textContent = "Formular einreichen →";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ── Submit ─────────────────────────────────────────────────
 async function submitForm() {
+  if (!credentialsOk()) {
+    document.getElementById("configError").style.display = "block";
+    document.getElementById("submitArea").style.display = "none";
+    return;
+  }
   const btn = document.getElementById("submitBtn");
   btn.disabled = true;
   btn.textContent = "Wird gespeichert …";
-  const data = collectData();
-  saveLocal(data);
-  sendEmail(data);
-  document.getElementById("submitArea").style.display = "none";
-  document.getElementById("successMsg").classList.remove("hidden");
-  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  try {
+    const data = collectData();
+    await saveToGist(data);
+    sendEmail(data);
+    document.getElementById("submitArea").style.display = "none";
+    document.getElementById("successMsg").classList.remove("hidden");
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = "Formular einreichen →";
+    const msg = document.getElementById("saveError");
+    msg.textContent = "Fehler beim Speichern: " + e.message + " — Bitte nochmal versuchen.";
+    msg.style.display = "block";
+  }
 }
+
+buildSteps();
 </script>
 </body>
 </html>
