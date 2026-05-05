@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HUPsi – Einreichungen</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{background:#f1f5f9;font-family:system-ui,sans-serif;color:#111}
+.tag{display:inline-block;background:#fee2e2;color:#991b1b;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:700;margin:2px}
+details>summary{cursor:pointer;list-style:none}
+details>summary::-webkit-details-marker{display:none}
+.dl{display:grid;grid-template-columns:180px 1fr;gap:6px 12px;font-size:12px;padding:5px 0;border-bottom:1px solid #f8fafc}
+.dk{color:#94a3b8;font-weight:600}
+.dv{color:#1e293b;white-space:pre-wrap;word-break:break-word}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
+.modal-box{background:#e5e7eb;border-radius:24px;width:100%;max-width:860px;overflow:hidden;position:relative;margin:auto}
+
+/* Filled form inside modal */
+.fm-header{background:#111;padding:28px 40px;color:#fff}
+.fm-notice{background:#fffbeb;border-bottom:1px solid #fde68a;padding:10px 40px;font-size:13px;color:#92400e}
+.fm-body{padding:28px 40px;display:flex;flex-direction:column;gap:18px}
+.fm-section{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px}
+.fm-section-alt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:22px}
+.fm-section-red{background:#fff5f5;border:1px solid #e0001b;border-radius:16px;padding:22px}
+.fm-h{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.fm-label{font-size:11px;font-weight:700;color:#64748b;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:6px}
+.fm-val{width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.6;min-height:44px;color:#111;white-space:pre-wrap;word-break:break-word}
+.fm-val-lg{min-height:84px}
+.fm-val-empty{color:#94a3b8;font-style:italic}
+.fm-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fm-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.fm-chk{display:flex;gap:10px;align-items:center;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:13px}
+.fm-chk.checked{border-color:#e0001b;background:#fff5f5}
+.fm-chk .dot{width:16px;height:16px;border-radius:3px;border:1.5px solid #cbd5e1;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.fm-chk.checked .dot{background:#e0001b;border-color:#e0001b;color:#fff}
+.fm-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.fm-step-num{color:#e0001b;font-weight:800;min-width:20px;margin-top:2px;font-size:13px}
+.fm-sub-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+
+@media print{
+  .modal-overlay{position:static;background:none;padding:0;display:block}
+  .modal-box{border-radius:0;max-width:none}
+  .no-print-modal{display:none!important}
+}
+</style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-4xl mx-auto">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-black">Einreichungen</h1>
+      <p class="text-sm text-slate-400 mt-1" id="meta">Wird geladen…</p>
+    </div>
+    <div class="flex gap-2 flex-wrap">
+      <button onclick="exportExcel()" id="xlsBtn" disabled class="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-40">⬇ Excel-Export</button>
+      <button onclick="exportJSON()" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">⬇ JSON</button>
+      <label class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300 cursor-pointer">⬆ Import<input type="file" accept=".json" onchange="importJSON(event)" class="hidden"/></label>
+      <a href="index.html" class="inline-flex items-center gap-2 rounded-xl bg-[#e0001b] px-4 py-2 text-sm font-bold text-white hover:opacity-90">+ Neues Formular</a>
+    </div>
+  </div>
+  <div id="list"></div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal-overlay hidden" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
+      <span class="font-bold text-sm text-slate-700">Formular-Ansicht</span>
+      <div class="flex gap-2">
+        <button onclick="window.print()" class="inline-flex items-center gap-2 rounded-lg bg-slate-400 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-500">🖨 Drucken</button>
+        <button onclick="document.getElementById('modal').classList.add('hidden')" class="inline-flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+      </div>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const PF_ALL = ["Buchhaltung / OP/AP / Rechnungen","Storno / Rechnungskorrektur","Adressänderung","Mahnwesen / Zahlung / Rücklastschrift","Fehlermeldung","Wiedervorlage / Organisation","Oberfläche / Übersicht","Trägerdienste / Kommunikation"];
+const RISK_ALL = ["falsche Rechnung","Kunde falsch informiert","Zahlung falsch gebucht","Vorgang bleibt liegen","zusätzlicher manueller Aufwand","anderes Risiko"];
+const ZUSATZ_ALL = [
+  ["zBuch","Buchhaltung / Rechnungen"],["zSto","Storno / Rechnungskorrektur"],
+  ["zAdr","Adressänderung"],["zMah","Mahnwesen / Zahlung"],
+  ["zFeh","Fehlermeldung"],["zWie","Wiedervorlage / Organisation"],
+  ["zObe","Oberfläche / Übersicht"],["zTra","Trägerdienste / Kommunikation"],
+];
+
+const LABELS = [
+  ["Name",           s => s.name],
+  ["Problemfeld",    s => (s.pf||[]).join(", ")],
+  ["Sonstiges PF",   s => s.pfS],
+  ["Ziel",           s => s.ziel],
+  ["Kundentyp",      s => s.ktyp],
+  ["Besonderheiten", s => s.beson],
+  ["Ablauf",         s => (s.abl||[]).filter(Boolean).map((x,i)=>`${i+1}. ${x}`).join("\n")],
+  ["Screenshots",    s => {
+    const imgs = (s.ablImg||[]).filter(Boolean);
+    if (!imgs.length) return null;
+    return `__imgs__${JSON.stringify(imgs)}`;
+  }],
+  ["Problem: Schritt",   s => s.pSch],
+  ["Problem: Passiert",  s => s.pWas],
+  ["Problem: Erwartet",  s => s.pErw],
+  ["Problem: Unklar",    s => s.pUnk],
+  ["Daten: Benötigt",    s => s.dBra],
+  ["Daten: Wo erwartet", s => s.dErw],
+  ["Daten: Wo gefunden", s => s.dFan],
+  ["Daten: Prüfung",     s => s.dPru],
+  ...ZUSATZ_ALL.map(([k,l]) => [`Zusatz: ${l}`, s => s[k]]),
+  ["Workaround",    s => s.work],
+  ["Akt. Dauer",    s => s.dauI],
+  ["Erw. Dauer",    s => s.dauE],
+  ["Häufigkeit",    s => s.haeu],
+  ["Risiken",       s => (s.risiken||[]).join(", ")],
+  ["Risikobeschr.", s => s.rskT],
+  ["Soll-Zustand",  s => s.soll],
+  ["Fertig-Def.",   s => s.fert],
+];
+
+function v(val, large) {
+  const empty = !val || (Array.isArray(val) && val.length === 0);
+  const cls = `fm-val${large ? " fm-val-lg" : ""}${empty ? " fm-val-empty" : ""}`;
+  return `<div class="${cls}">${empty ? "–" : escHtml(val)}</div>`;
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+}
+function chk(val, all) {
+  const checked = val || [];
+  return all.map(opt => {
+    const on = checked.includes(opt);
+    return `<div class="fm-chk${on?" checked":""}"><span class="dot">${on?"✓":""}</span>${escHtml(opt)}</div>`;
+  }).join("");
+}
+
+function buildFormView(s) {
+  const abl = (s.abl||[]).map((txt, i) => {
+    const img = (s.ablImg||[])[i];
+    return `
+    <div class="fm-step">
+      <span class="fm-step-num">${i+1}.</span>
+      <div style="flex:1">
+        <div class="fm-val" style="min-height:36px">${txt ? escHtml(txt) : '<span style="color:#94a3b8;font-style:italic">–</span>'}</div>
+        ${img ? `<img src="${img}" style="margin-top:8px;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #e2e8f0;object-fit:contain;display:block">` : ''}
+      </div>
+    </div>`;
+  }).join("");
+
+  const zusatz = ZUSATZ_ALL.map(([k,l]) => `
+    <div class="fm-sub-card">
+      <div style="font-weight:700;font-size:13px;margin-bottom:8px">${l}</div>
+      ${v(s[k], true)}
+    </div>`).join("");
+
+  return `
+    <div class="fm-header">
+      <div style="font-size:26px;font-weight:900;margin-bottom:8px">HUPsi-Formular</div>
+      <div style="font-size:13px;color:#cbd5e1;line-height:1.6;max-width:560px">Bitte beschreibe einen konkreten Fall aus der Praxis.</div>
+      <div style="margin-top:12px;font-size:12px;color:#94a3b8">Eingereicht: ${new Date(s.ts).toLocaleString("de-DE")}${s.name ? " · " + escHtml(s.name) : ""}</div>
+    </div>
+    <div class="fm-notice">
+      <strong>Hinweis:</strong> Bitte pro Formular nur einen konkreten Problemfall erfassen.
+    </div>
+    <div class="fm-body">
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">👤</span>1. Name</div>
+        ${v(s.name)}
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">🏷</span>2. Problemfeld</div>
+        <div class="fm-grid2" style="margin-bottom:12px">${chk(s.pf, PF_ALL)}</div>
+        <div><span class="fm-label">Sonstiges</span>${v(s.pfS)}</div>
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">🎯</span>3. Ziel des Vorgangs</div>
+        <p style="font-size:12px;color:#64748b;margin-bottom:10px">Was wolltest du konkret erreichen?</p>
+        ${v(s.ziel, true)}
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">📍</span>4. Ausgangssituation</div>
+        <div class="fm-grid2">
+          <div><span class="fm-label">Kundentyp / Fall</span>${v(s.ktyp, true)}</div>
+          <div><span class="fm-label">Besonderheiten</span>${v(s.beson, true)}</div>
+        </div>
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">📋</span>5. Ablauf Schritt für Schritt</div>
+        <p style="font-size:12px;color:#64748b;margin-bottom:12px">Bitte möglichst konkret: Maske, Klick, Eingabe, Ergebnis.</p>
+        ${abl}
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">⚠️</span>6. Problem im Ablauf</div>
+        <div class="fm-grid2">
+          <div><span class="fm-label">Bei welchem Schritt trat das Problem auf?</span>${v(s.pSch, true)}</div>
+          <div><span class="fm-label">Was genau ist passiert?</span>${v(s.pWas, true)}</div>
+          <div><span class="fm-label">Was hattest du erwartet?</span>${v(s.pErw, true)}</div>
+          <div><span class="fm-label">Was war unklar?</span>${v(s.pUnk, true)}</div>
+        </div>
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">🗄</span>7. Benötigte Daten / Informationen</div>
+        <div class="fm-grid2">
+          <div><span class="fm-label">Welche Daten brauchst du?</span>${v(s.dBra, true)}</div>
+          <div><span class="fm-label">Wo erwartest du sie im System?</span>${v(s.dErw, true)}</div>
+          <div><span class="fm-label">Wo hast du sie gefunden?</span>${v(s.dFan, true)}</div>
+          <div><span class="fm-label">Welche Prüfung machst du am Ende?</span>${v(s.dPru, true)}</div>
+        </div>
+      </div>
+
+      <div class="fm-section-alt">
+        <div class="fm-h"><span style="color:#e0001b">🔍</span>8. Zusatzfragen je Problemfeld</div>
+        <div class="fm-grid2">${zusatz}</div>
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">🔄</span>9. Workaround</div>
+        <p style="font-size:12px;color:#64748b;margin-bottom:10px">Was hast du stattdessen gemacht?</p>
+        ${v(s.work, true)}
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">⏱</span>10. Aufwand und Häufigkeit</div>
+        <div class="fm-grid3">
+          <div><span class="fm-label">Aktuelle Dauer</span>${v(s.dauI)}</div>
+          <div><span class="fm-label">Erwartete Dauer</span>${v(s.dauE)}</div>
+          <div><span class="fm-label">Häufigkeit</span>${v(s.haeu)}</div>
+        </div>
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">🛡</span>11. Risiko / Fehlerfolgen</div>
+        <div class="fm-grid2" style="margin-bottom:12px">${chk(s.risiken, RISK_ALL)}</div>
+        ${v(s.rskT, true)}
+      </div>
+
+      <div class="fm-section">
+        <div class="fm-h"><span style="color:#e0001b">✨</span>12. Soll-Zustand</div>
+        <p style="font-size:12px;color:#64748b;margin-bottom:10px">Wie müsste der Ablauf idealerweise funktionieren?</p>
+        ${v(s.soll, true)}
+      </div>
+
+      <div class="fm-section-red">
+        <div class="fm-h"><span style="color:#e0001b">🎯</span>13. Fertig-Definition</div>
+        <p style="font-size:12px;color:#7f1d1d;margin-bottom:10px">Woran erkennst du, dass der Vorgang korrekt abgeschlossen ist?</p>
+        ${v(s.fert, true)}
+      </div>
+
+      <div style="border-top:1px solid #e2e8f0;padding-top:16px;font-size:12px;color:#94a3b8;text-align:center">
+        Dieses Formular dient der strukturierten Erhebung konkreter Problemfälle.
+      </div>
+    </div>`;
+}
+
+function openModal(id) {
+  const subs = loadSubs();
+  const s = subs.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById("modalContent").innerHTML = buildFormView(s);
+  document.getElementById("modal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById("modal")) {
+    document.getElementById("modal").classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    document.getElementById("modal").classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+});
+
+function loadSubs() {
+  return JSON.parse(localStorage.getItem("hup-submissions") || "[]").sort((a,b) => b.ts - a.ts);
+}
+
+function render() {
+  const subs = loadSubs();
+  document.getElementById("meta").textContent =
+    `${subs.length} Einreichung${subs.length!==1?"en":""} · Benachrichtigungen an okur@taz.de`;
+  document.getElementById("xlsBtn").disabled = subs.length === 0;
+
+  const list = document.getElementById("list");
+  if (subs.length === 0) {
+    list.innerHTML = '<div class="text-center mt-16 text-slate-400"><p class="text-4xl mb-3">📭</p><p>Noch keine Einreichungen vorhanden.</p><p class="text-sm mt-2">Fülle das <a href="index.html" class="underline">Formular</a> aus.</p></div>';
+    return;
+  }
+
+  list.innerHTML = subs.map((s) => {
+    const tags = (s.pf||[]).map(t=>`<span class="tag">${t}</span>`).join("") ||
+      '<span class="text-slate-400 text-xs">Kein Problemfeld</span>';
+    const preview = s.ziel ? `<p class="text-sm text-slate-500 mt-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:440px">${s.ziel.slice(0,120)}</p>` : "";
+    const nameStr = s.name ? `<span class="font-semibold text-slate-700">${s.name}</span> · ` : "";
+    const date = new Date(s.ts).toLocaleString("de-DE");
+
+    const rows = LABELS.map(([label, fn]) => {
+      const val = fn(s);
+      if (!val) return "";
+      if (val.startsWith("__imgs__")) {
+        const imgs = JSON.parse(val.slice(8));
+        const thumbs = imgs.map((src, i) => {
+          const stepNums = (s.abl||[]).map((t,idx) => (s.ablImg||[])[idx] === src ? idx+1 : null).filter(Boolean);
+          const stepLabel = stepNums.length ? `Schritt ${stepNums[0]}` : `Bild ${i+1}`;
+          return `<div style="display:inline-block;margin:4px;text-align:center;vertical-align:top">
+            <img src="${src}" style="height:80px;max-width:130px;border-radius:8px;border:1px solid #e2e8f0;object-fit:cover;display:block;cursor:pointer" onclick="showImgFull('${src}')" title="Klicken zum Vergrößern">
+            <span style="font-size:10px;color:#94a3b8;margin-top:2px;display:block">${stepLabel}</span>
+          </div>`;
+        }).join("");
+        return `<div class="dl"><span class="dk">Screenshots</span><div>${thumbs}</div></div>`;
+      }
+      return `<div class="dl"><span class="dk">${label}</span><span class="dv">${val}</span></div>`;
+    }).join("");
+
+    return `
+      <div class="bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden">
+        <div class="p-5 flex items-start justify-between gap-4">
+          <div class="flex-1 min-w-0">
+            <div class="mb-1">${tags}</div>
+            ${preview}
+            <p class="text-xs text-slate-400 mt-2">${nameStr}${date}</p>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+            <button onclick="openModal('${s.id}')" class="inline-flex items-center gap-1.5 rounded-lg bg-[#111] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80">📄 Formular-Ansicht</button>
+            <button onclick="toggleDetails('${s.id}')" id="btn-${s.id}" class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 text-slate-700 px-3 py-1.5 text-xs font-bold hover:bg-slate-200">Tabelle ↓</button>
+            <button onclick="deleteSub('${s.id}')" class="text-xs text-red-400 hover:text-red-600 font-semibold px-1">✕</button>
+          </div>
+        </div>
+        <div id="detail-${s.id}" class="hidden border-t border-slate-100 px-5 py-4">${rows}</div>
+      </div>`;
+  }).join("");
+}
+
+function toggleDetails(id) {
+  const el = document.getElementById(`detail-${id}`);
+  const btn = document.getElementById(`btn-${id}`);
+  const hidden = el.classList.toggle("hidden");
+  btn.textContent = hidden ? "Tabelle ↓" : "Tabelle ↑";
+}
+
+function deleteSub(id) {
+  if (!confirm("Diesen Eintrag wirklich löschen?")) return;
+  const subs = loadSubs().filter(s => s.id !== id);
+  localStorage.setItem("hup-submissions", JSON.stringify(subs));
+  render();
+}
+
+function showImgFull(src) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px';
+  overlay.onclick = () => overlay.remove();
+  const img = document.createElement('img');
+  img.src = src;
+  img.style.cssText = 'max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)';
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
+}
+
+function exportExcel() {
+  const XLSX = window.XLSX;
+  const subs = loadSubs();
+  const rows = subs.map(s => {
+    const imgCount = (s.ablImg||[]).filter(Boolean).length;
+    const row = { "Datum": new Date(s.ts).toLocaleString("de-DE") };
+    LABELS.filter(([l]) => l !== "Screenshots").forEach(([label, fn]) => {
+      const v = fn(s);
+      row[label] = (v && !v.startsWith("__imgs__")) ? v : "";
+    });
+    row["Screenshots (Anzahl)"] = imgCount > 0 ? imgCount : "";
+    return row;
+  });
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws["!cols"] = Object.keys(rows[0]||{}).map(() => ({ wch: 30 }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Einreichungen");
+  XLSX.writeFile(wb, `HUP-Einreichungen-${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(loadSubs(), null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `HUP-Einreichungen-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      const existing = loadSubs();
+      const ids = new Set(existing.map(s => s.id));
+      const neu = imported.filter(s => !ids.has(s.id));
+      localStorage.setItem("hup-submissions", JSON.stringify([...existing, ...neu]));
+      render();
+      alert(`✓ ${neu.length} neue Einreichung(en) importiert.`);
+    } catch(e) { alert("Fehler: " + e.message); }
+  };
+  reader.readAsText(file);
+}
+
+render();
+</script>
+</body>
+</html>
