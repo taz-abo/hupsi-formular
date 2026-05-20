@@ -224,21 +224,24 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
 
 // ── Image helpers ──────────────────────────────────────────
 const imgData = {};
+const imgMeta = {};
 
 function buildSteps() {
   const container = document.getElementById("stepsContainer");
   container.innerHTML = "";
   for (let i = 1; i <= 6; i++) {
     imgData[i] = "";
+    imgMeta[i] = null;
     container.innerHTML += `
       <div class="flex items-start gap-3">
         <span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">${i}.</span>
         <div style="flex:1">
           <textarea class="step-in" id="abl${i}" placeholder="Schritt ${i}"></textarea>
-          <label class="img-btn">📎 Screenshot anhängen
-            <input type="file" accept="image/*" onchange="handleImg(event,${i})" id="imgInput${i}" style="display:none">
+          <label class="img-btn">📎 Datei anhängen (Bild oder PDF)
+            <input type="file" accept="image/*,.pdf" onchange="handleImg(event,${i})" id="imgInput${i}" style="display:none">
           </label>
           <button class="img-rem" id="imgRemBtn${i}" onclick="removeImg(${i})">✕ Entfernen</button>
+          <span id="imgLabel${i}" style="display:none;font-size:12px;color:#475569;margin-top:4px;display:none"></span>
           <img class="img-preview" id="imgPrev${i}">
         </div>
       </div>`;
@@ -256,7 +259,7 @@ function compressImg(file, cb) {
       const c = document.createElement("canvas");
       c.width = w; c.height = h;
       c.getContext("2d").drawImage(img, 0, 0, w, h);
-      cb(c.toDataURL("image/jpeg", 0.82));
+      cb(c.toDataURL("image/jpeg", 0.82), "image");
     };
     img.src = e.target.result;
   };
@@ -266,18 +269,38 @@ function compressImg(file, cb) {
 function handleImg(e, n) {
   const file = e.target.files[0];
   if (!file) return;
-  compressImg(file, src => {
-    imgData[n] = src;
-    const prev = document.getElementById("imgPrev"+n);
-    prev.src = src; prev.style.display = "block";
-    document.getElementById("imgRemBtn"+n).style.display = "inline-block";
-  });
+  if (file.type === "application/pdf") {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const src = ev.target.result;
+      imgData[n] = src;
+      imgMeta[n] = { type: "pdf", name: file.name };
+      const prev = document.getElementById("imgPrev"+n);
+      prev.style.display = "none"; // hide img tag for PDFs
+      const lbl = document.getElementById("imgLabel"+n);
+      lbl.textContent = "📄 " + file.name;
+      lbl.style.display = "inline-block";
+      document.getElementById("imgRemBtn"+n).style.display = "inline-block";
+    };
+    reader.readAsDataURL(file);
+  } else {
+    compressImg(file, (src) => {
+      imgData[n] = src;
+      imgMeta[n] = { type: "image", name: file.name };
+      const prev = document.getElementById("imgPrev"+n);
+      prev.src = src; prev.style.display = "block";
+      document.getElementById("imgLabel"+n).style.display = "none";
+      document.getElementById("imgRemBtn"+n).style.display = "inline-block";
+    });
+  }
 }
 
 function removeImg(n) {
   imgData[n] = "";
+  imgMeta[n] = null;
   document.getElementById("imgPrev"+n).style.display = "none";
   document.getElementById("imgRemBtn"+n).style.display = "none";
+  document.getElementById("imgLabel"+n).style.display = "none";
   document.getElementById("imgInput"+n).value = "";
 }
 
@@ -293,6 +316,7 @@ function collectData() {
     beson:document.getElementById("beson").value,
     abl:  [1,2,3,4,5,6].map(i => document.getElementById("abl"+i).value),
     ablImg:[1,2,3,4,5,6].map(i => imgData[i]||""),
+    ablMeta:[1,2,3,4,5,6].map(i => imgMeta[i]||null),
     pSch: document.getElementById("pSch").value,
     pWas: document.getElementById("pWas").value,
     pErw: document.getElementById("pErw").value,
@@ -321,8 +345,8 @@ function collectData() {
 }
 
 // ── Storage ────────────────────────────────────────────────
-const GIST_TOKEN = [103, 104, 112, 95, 74, 79, 85, 48, 98, 79, 85, 52, 80, 56, 68, 120, 80, 75, 77, 89, 78, 86, 119, 85, 78, 69, 82, 109, 104, 49, 104, 109, 53, 72, 52, 71, 73, 50, 89, 83].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "c1622e10c31451873abf1ccf86b9e346";
+const GIST_TOKEN = [103, 104, 112, 95, 48, 114, 52, 68, 80, 50, 81, 107, 55, 98, 83, 105, 119, 68, 121, 110, 56, 121, 122, 98, 78, 55, 66, 74, 121, 85, 67, 55, 72, 108, 51, 56, 77, 67, 122, 66].map(c=>String.fromCharCode(c)).join("");
+const GIST_ID    = "0c60acde24c493e5e7e0947b0ad36f61";
 const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
 
 function credentialsOk() {
