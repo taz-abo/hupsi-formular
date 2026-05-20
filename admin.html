@@ -199,8 +199,8 @@ input[type=checkbox]{accent-color:#e0001b}
 
 
 
-const GIST_TOKEN = [103, 104, 112, 95, 74, 79, 85, 48, 98, 79, 85, 52, 80, 56, 68, 120, 80, 75, 77, 89, 78, 86, 119, 85, 78, 69, 82, 109, 104, 49, 104, 109, 53, 72, 52, 71, 73, 50, 89, 83].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "c1622e10c31451873abf1ccf86b9e346";
+const GIST_TOKEN = [103, 104, 112, 95, 48, 114, 52, 68, 80, 50, 81, 107, 55, 98, 83, 105, 119, 68, 121, 110, 56, 121, 122, 98, 78, 55, 66, 74, 121, 85, 67, 55, 72, 108, 51, 56, 77, 67, 122, 66].map(c=>String.fromCharCode(c)).join("");
+const GIST_ID    = "0c60acde24c493e5e7e0947b0ad36f61";
 const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
 
 async function loadFromGist() {
@@ -394,10 +394,19 @@ function chk(val, all) {
 
 function buildFormView(s) {
   const abl = (s.abl||[]).map((txt,i)=>{
-    const img=(s.ablImg||[])[i];
+    const src=(s.ablImg||[])[i];
+    const meta=(s.ablMeta||[])[i];
+    let attachment = "";
+    if (src) {
+      if (meta?.type === "pdf" || src.startsWith("data:application/pdf")) {
+        attachment = `<a href="${src}" download="${meta?.name||"anhang.pdf"}" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;font-size:12px;color:#1e293b;text-decoration:none;font-weight:600">📄 ${escHtml(meta?.name||"anhang.pdf")} herunterladen</a>`;
+      } else {
+        attachment = `<img src="${src}" style="margin-top:8px;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #e2e8f0;object-fit:contain;display:block">`;
+      }
+    }
     return `<div class="fm-step"><span class="fm-step-num">${i+1}.</span><div style="flex:1">
       <div class="fm-val" style="min-height:36px">${txt?escHtml(txt):'<span style="color:#94a3b8;font-style:italic">–</span>'}</div>
-      ${img?`<img src="${img}" style="margin-top:8px;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #e2e8f0;object-fit:contain;display:block">`:""}
+      ${attachment}
     </div></div>`;
   }).join("");
 
@@ -534,13 +543,24 @@ function render(subs) {
       return `<div class="dl"><span class="dk">${label}</span><span class="dv">${val}</span></div>`;
     }).join("");
 
-    const thumbs = (s.ablImg||[]).map((src,i)=>src?`
-      <div style="display:inline-block;margin:4px;text-align:center;vertical-align:top">
+    const thumbs = (s.ablImg||[]).map((src,i)=>{
+      if (!src) return "";
+      const meta = (s.ablMeta||[])[i];
+      const isPdf = meta?.type === "pdf" || src.startsWith("data:application/pdf");
+      if (isPdf) {
+        return `<div style="display:inline-block;margin:4px;text-align:center;vertical-align:top">
+          <a href="${src}" download="${meta?.name||"anhang.pdf"}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100px;height:80px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;text-decoration:none;color:#1e293b;font-size:11px;font-weight:600;gap:4px">
+            <span style="font-size:24px">📄</span>${escHtml(meta?.name||"PDF")}
+          </a>
+          <span style="font-size:10px;color:#94a3b8;display:block;margin-top:2px">Schritt ${i+1}</span>
+        </div>`;
+      }
+      return `<div style="display:inline-block;margin:4px;text-align:center;vertical-align:top">
         <img src="${src}" style="height:80px;max-width:120px;border-radius:8px;border:1px solid #e2e8f0;object-fit:cover;display:block;cursor:pointer"
           onclick="showImgFull('${src}')" title="Klicken zum Vergrößern">
         <span style="font-size:10px;color:#94a3b8;display:block;margin-top:2px">Schritt ${i+1}</span>
-      </div>`:""
-    ).join("");
+      </div>`;
+    }).join("");
 
     return `
       <div class="bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden">
