@@ -199,8 +199,8 @@ input[type=checkbox]{accent-color:#e0001b}
 
 
 
-const GIST_TOKEN = [103, 104, 112, 95, 79, 109, 101, 49, 119, 79, 65, 109, 120, 105, 69, 106, 69, 88, 100, 98, 66, 111, 90, 98, 120, 100, 81, 69, 119, 50, 100, 55, 103, 98, 51, 86, 118, 116, 113, 56].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "a465bb64c6186911439f3ff3dc8fb110";
+const GIST_TOKEN = [103, 104, 112, 95, 74, 79, 85, 48, 98, 79, 85, 52, 80, 56, 68, 120, 80, 75, 77, 89, 78, 86, 119, 85, 78, 69, 82, 109, 104, 49, 104, 109, 53, 72, 52, 71, 73, 50, 89, 83].map(c=>String.fromCharCode(c)).join("");
+const GIST_ID    = "c1622e10c31451873abf1ccf86b9e346";
 const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
 
 async function loadFromGist() {
@@ -409,7 +409,7 @@ function buildFormView(s) {
 
   return `
     <div class="fm-header">
-      <div style="font-size:26px;font-weight:900;margin-bottom:8px">😅 HUPsi-Formular</div>
+      <div style="font-size:26px;font-weight:900;margin-bottom:8px">HUPsi-Formular</div>
       <div style="font-size:13px;color:#cbd5e1;line-height:1.6;max-width:560px">Strukturierte Erhebung konkreter Problemfälle.</div>
       <div style="margin-top:12px;font-size:12px;color:#94a3b8">Eingereicht: ${new Date(s.ts).toLocaleString("de-DE")}${s.name?" · "+escHtml(s.name):""}</div>
     </div>
