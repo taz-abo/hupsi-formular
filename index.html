@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>😅 HUPsi-Formular</title>
+<title>HUPsi-Formular</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 *{box-sizing:border-box}
@@ -33,7 +33,7 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
 
 <div class="no-print sticky top-0 z-50 border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
   <div class="mx-auto flex max-w-5xl items-center justify-between gap-4">
-    <span class="text-sm font-bold text-slate-800">😅 HUPsi-Formular</span>
+    <span class="text-sm font-bold text-slate-800">HUPsi-Formular</span>
     <div class="flex gap-2">
       <a href="admin.html" class="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200">📊 Einreichungen</a>
       <button onclick="window.print()" class="inline-flex items-center gap-2 rounded-xl bg-slate-400 px-4 py-2 text-sm font-bold text-white hover:bg-slate-500">🖨 Drucken</button>
@@ -43,7 +43,8 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
 
 <main class="page mx-auto my-8 max-w-5xl overflow-hidden rounded-3xl bg-white shadow-xl">
   <section class="bg-[#111] px-8 py-8 text-white md:px-12">
-    <h1 class="text-3xl font-black leading-tight md:text-4xl">😅 HUPsi-Formular</h1>
+    <h1 class="text-3xl font-black leading-tight md:text-4xl">HUPsi-Formular</h1>
+    <p class="mt-2 text-sm text-slate-400">(HUP system improvement)</p>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-200">Bitte beschreibe einen konkreten Fall aus der Praxis. Ziel ist nicht „allgemeines Feedback", sondern eine möglichst nachvollziehbare Beschreibung, aus der später klare Anforderungen, Testfälle und Akzeptanzkriterien entstehen können.</p>
   </section>
   <section class="border-b border-slate-200 bg-amber-50 px-8 py-4 text-sm text-amber-900 md:px-12">
@@ -320,8 +321,8 @@ function collectData() {
 }
 
 // ── Storage ────────────────────────────────────────────────
-const GIST_TOKEN = [103, 104, 112, 95, 79, 109, 101, 49, 119, 79, 65, 109, 120, 105, 69, 106, 69, 88, 100, 98, 66, 111, 90, 98, 120, 100, 81, 69, 119, 50, 100, 55, 103, 98, 51, 86, 118, 116, 113, 56].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "a465bb64c6186911439f3ff3dc8fb110";
+const GIST_TOKEN = [103, 104, 112, 95, 74, 79, 85, 48, 98, 79, 85, 52, 80, 56, 68, 120, 80, 75, 77, 89, 78, 86, 119, 85, 78, 69, 82, 109, 104, 49, 104, 109, 53, 72, 52, 71, 73, 50, 89, 83].map(c=>String.fromCharCode(c)).join("");
+const GIST_ID    = "c1622e10c31451873abf1ccf86b9e346";
 const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
 
 function credentialsOk() {
