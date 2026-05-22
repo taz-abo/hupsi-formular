@@ -39,8 +39,26 @@ body{background:#f1f5f9;font-family:system-ui,sans-serif;color:#111}
 .fm-sub-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
 @media print{
   .modal-overlay{position:static;background:none;padding:0;display:block}
-  .modal-box{border-radius:0;max-width:none}
+  .modal-box{border-radius:0;max-width:none;box-shadow:none}
   .no-print-modal{display:none!important}
+  body{background:#fff!important}
+  .fm-body{padding:12px 24px!important}
+  .fm-header{padding:20px 24px!important}
+  .fm-notice{padding:8px 24px!important}
+  .fm-step{break-inside:avoid;page-break-inside:avoid}
+  .fm-section,.fm-section-alt,.fm-section-red{break-inside:avoid;page-break-inside:avoid;margin-bottom:8px}
+  .step-img{
+    max-width:100%!important;
+    max-height:none!important;
+    width:auto!important;
+    display:block!important;
+    margin-top:8px!important;
+    border-radius:6px!important;
+    border:1px solid #e2e8f0!important;
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+  @page{size:A4;margin:15mm 12mm}
 }
 .ef{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.75rem;background:#fff;font-family:inherit;font-size:13px;min-height:80px;resize:vertical;outline:none;line-height:1.5}
 .ef:focus{border-color:#94a3b8}
@@ -62,11 +80,45 @@ input[type=checkbox]{accent-color:#e0001b}
     <div class="flex gap-2 flex-wrap">
       <button onclick="exportExcel()" id="xlsBtn" disabled class="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-40">⬇ Excel-Export</button>
       <button onclick="loadSubs()" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">↻ Aktualisieren</button>
+      <button onclick="openEmailModal()" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">✉️ Benachrichtigungen</button>
       <button onclick="openEntryModal()" class="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-900">✎ Manuell hinzufügen</button>
       <a href="index.html" class="inline-flex items-center gap-2 rounded-xl bg-[#e0001b] px-4 py-2 text-sm font-bold text-white hover:opacity-90">+ Neues Formular</a>
     </div>
   </div>
   <div id="list"><p class="text-center text-slate-400 mt-16">Wird geladen…</p></div>
+</div>
+
+<!-- Email Settings Modal -->
+<div id="emailModal" class="modal-overlay hidden" onclick="closeEmailBg(event)">
+  <div class="modal-box" style="max-width:480px">
+    <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
+      <span class="font-bold text-sm text-slate-700">✉️ Benachrichtigungen verwalten</span>
+      <button onclick="closeEmailModal()" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+    </div>
+    <div style="padding:24px;background:#f1f5f9;display:flex;flex-direction:column;gap:16px">
+      <p style="font-size:13px;color:#475569;line-height:1.6">Bei jeder neuen Einreichung wird eine E-Mail an alle eingetragenen Adressen gesendet.</p>
+
+      <!-- Current list -->
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Aktuelle Empfänger</div>
+        <div id="emailList" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+
+      <!-- Add new -->
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Neue Adresse hinzufügen</div>
+        <div style="display:flex;gap:8px">
+          <input type="email" id="newEmailInput" placeholder="name@taz.de"
+            style="flex:1;border:1px solid #cbd5e1;border-radius:10px;padding:8px 12px;font-size:13px;outline:none;font-family:inherit"
+            onkeydown="if(event.key==='Enter')addEmail()">
+          <button onclick="addEmail()" style="background:#111;color:#fff;border:none;border-radius:10px;padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">+ Hinzufügen</button>
+        </div>
+        <div id="emailAddErr" style="display:none;margin-top:8px;font-size:12px;color:#ef4444"></div>
+      </div>
+
+      <div id="emailSaveMsg" style="display:none;background:#dcfce7;border:1px solid #86efac;border-radius:10px;padding:10px 14px;font-size:13px;color:#16a34a;font-weight:600">✓ Gespeichert</div>
+    </div>
+  </div>
 </div>
 
 <!-- Entry Modal: manual submission -->
@@ -200,7 +252,7 @@ input[type=checkbox]{accent-color:#e0001b}
 
 
 const GIST_TOKEN = [103, 104, 112, 95, 121, 73, 87, 80, 85, 111, 104, 50, 111, 67, 70, 87, 53, 89, 74, 89, 106, 52, 66, 102, 89, 122, 122, 49, 65, 75, 121, 81, 110, 108, 52, 100, 121, 70, 85, 66].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "3720a1a5106c5fa393adc96fc64446dd";
+const GIST_ID    = "10c9506779338f3de6b41e0d995c77db";
 const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
 
 async function loadFromGist() {
@@ -357,6 +409,81 @@ async function saveManualEntry() {
     btn.textContent = "Einreichung speichern";
   }
 }
+
+const DEFAULT_EMAILS = ["okur@taz.de"];
+
+function getEmails() {
+  try {
+    return JSON.parse(localStorage.getItem("hupsi-notify-emails") || "null") || DEFAULT_EMAILS;
+  } catch { return DEFAULT_EMAILS; }
+}
+function saveEmails(list) {
+  localStorage.setItem("hupsi-notify-emails", JSON.stringify(list));
+}
+
+function openEmailModal() {
+  renderEmailList();
+  document.getElementById("newEmailInput").value = "";
+  document.getElementById("emailAddErr").style.display = "none";
+  document.getElementById("emailSaveMsg").style.display = "none";
+  document.getElementById("emailModal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+function closeEmailModal() {
+  document.getElementById("emailModal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+function closeEmailBg(e) { if (e.target === document.getElementById("emailModal")) closeEmailModal(); }
+
+function renderEmailList() {
+  const emails = getEmails();
+  const list = document.getElementById("emailList");
+  if (!emails.length) {
+    list.innerHTML = '<p style="font-size:13px;color:#94a3b8;font-style:italic">Keine Empfänger eingetragen.</p>';
+    return;
+  }
+  list.innerHTML = emails.map((email, i) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:9px 12px">
+      <span style="font-size:13px;color:#111">✉️ ${email}</span>
+      <button onclick="removeEmail(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px;font-weight:700;padding:2px 6px;border-radius:6px" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'">✕ Entfernen</button>
+    </div>`).join("");
+}
+
+function addEmail() {
+  const input = document.getElementById("newEmailInput");
+  const err = document.getElementById("emailAddErr");
+  const val = input.value.trim().toLowerCase();
+  err.style.display = "none";
+  if (!val || !/^[^@]+@[^@]+\.[^@]+$/.test(val)) {
+    err.textContent = "Bitte eine gültige E-Mail-Adresse eingeben.";
+    err.style.display = "block"; return;
+  }
+  const emails = getEmails();
+  if (emails.includes(val)) {
+    err.textContent = "Diese Adresse ist bereits eingetragen.";
+    err.style.display = "block"; return;
+  }
+  emails.push(val);
+  saveEmails(emails);
+  input.value = "";
+  renderEmailList();
+  showEmailSaved();
+}
+
+function removeEmail(i) {
+  const emails = getEmails();
+  emails.splice(i, 1);
+  saveEmails(emails);
+  renderEmailList();
+  showEmailSaved();
+}
+
+function showEmailSaved() {
+  const msg = document.getElementById("emailSaveMsg");
+  msg.style.display = "block";
+  setTimeout(() => msg.style.display = "none", 2000);
+}
+
 function credentialsOk() {
   return !GIST_TOKEN.includes("__") && !GIST_ID.includes("__");
 }
