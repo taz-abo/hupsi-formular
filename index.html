@@ -348,7 +348,7 @@ function collectData() {
 
 // ── Storage ────────────────────────────────────────────────
 const GIST_TOKEN = [103, 104, 112, 95, 121, 73, 87, 80, 85, 111, 104, 50, 111, 67, 70, 87, 53, 89, 74, 89, 106, 52, 66, 102, 89, 122, 122, 49, 65, 75, 121, 81, 110, 108, 52, 100, 121, 70, 85, 66].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "3720a1a5106c5fa393adc96fc64446dd";
+const GIST_ID    = "10c9506779338f3de6b41e0d995c77db";
 const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
 
 function credentialsOk() {
@@ -387,26 +387,39 @@ async function saveToGist(entry) {
   }
 }
 
-async function sendEmail(data) {
+function getNotifyEmails() {
   try {
-    await fetch("https://formsubmit.co/ajax/okur@taz.de", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({
-        _subject: `🔔 HUPsi-Einreichung von ${data.name||"(kein Name)"} – ${new Date(data.ts).toLocaleDateString("de-DE")}`,
-        _template: "table",
-        Name: data.name||"–",
-        Problemfeld: (data.pf||[]).join(", ")||"–",
-        Ziel: data.ziel||"–",
-        Ablauf: (data.abl||[]).filter(Boolean).map((s,i)=>`${i+1}. ${s}`).join(" | ")||"–",
-        Problem: data.pWas||"–",
-        Risiken: (data.risiken||[]).join(", ")||"–",
-        Workaround: data.work||"–",
-        Fertig_Definition: data.fert||"–",
-        _replyto: "noreply@taz.de",
-      })
-    });
-  } catch(e) {}
+    return JSON.parse(localStorage.getItem("hupsi-notify-emails") || "null") || ["okur@taz.de"];
+  } catch { return ["okur@taz.de"]; }
+}
+
+async function sendEmail(data) {
+  const emails = getNotifyEmails();
+  const subject = `🔔 HUPsi-Einreichung von ${data.name||"(kein Name)"} – ${new Date(data.ts).toLocaleDateString("de-DE")}`;
+  const body = {
+    _subject: subject,
+    _template: "table",
+    Name: data.name||"–",
+    Problemfeld: (data.pf||[]).join(", ")||"–",
+    Ziel: data.ziel||"–",
+    Ablauf: (data.abl||[]).filter(Boolean).map((s,i)=>`${i+1}. ${s}`).join(" | ")||"–",
+    Problem: data.pWas||"–",
+    Risiken: (data.risiken||[]).join(", ")||"–",
+    Workaround: data.work||"–",
+    Fertig_Definition: data.fert||"–",
+    _replyto: "noreply@taz.de",
+  };
+  // Send to each address
+  for (const email of emails) {
+    try {
+      await fetch(`https://formsubmit.co/ajax/${email}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({...body, _cc: emails.filter(e=>e!==email).join(",")})
+      });
+      break; // FormSubmit handles CC, so one call is enough
+    } catch(e) {}
+  }
 }
 
 // ── Form reset ─────────────────────────────────────────────
