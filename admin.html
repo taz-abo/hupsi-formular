@@ -88,6 +88,56 @@ input[type=checkbox]{accent-color:#e0001b}
   <div id="list"><p class="text-center text-slate-400 mt-16">Wird geladen…</p></div>
 </div>
 
+<!-- Jira Modal -->
+<div id="jiraModal" class="modal-overlay hidden" onclick="closeJiraBg(event)">
+  <div class="modal-box" style="max-width:680px">
+    <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
+      <span class="font-bold text-sm text-slate-700">🎫 Jira-Ticket erstellen</span>
+      <button onclick="closeJiraModal()" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+    </div>
+    <div style="padding:24px;background:#f1f5f9;display:flex;flex-direction:column;gap:16px">
+
+      <div style="background:#e0f2fe;border:1px solid #7dd3fc;border-radius:12px;padding:12px 16px;font-size:13px;color:#0369a1;line-height:1.6">
+        <strong>So geht's:</strong> Text unten kopieren → in Jira-Ticket-Beschreibung einfügen. Bilder separat als Anhänge hochladen.
+      </div>
+
+      <!-- Summary field -->
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Ticket-Titel (Summary)</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="jiraSummary" readonly
+            style="flex:1;border:1px solid #e2e8f0;border-radius:10px;padding:8px 12px;font-size:13px;background:#f8fafc;font-family:inherit;color:#111;cursor:text">
+          <button onclick="copyJiraSummary()" id="copySummaryBtn"
+            style="background:#0052CC;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap">
+            Kopieren
+          </button>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em">Beschreibung (Description)</div>
+          <button onclick="copyJiraDesc()" id="copyDescBtn"
+            style="background:#0052CC;color:#fff;border:none;border-radius:10px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer">
+            Kopieren
+          </button>
+        </div>
+        <textarea id="jiraDesc" readonly
+          style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:12px;background:#f8fafc;font-family:monospace;min-height:280px;resize:vertical;color:#374151;line-height:1.5;outline:none"></textarea>
+      </div>
+
+      <!-- Images download -->
+      <div id="jiraImgSection" style="display:none;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">📎 Bilder als Anhänge herunterladen</div>
+        <div id="jiraImgList" style="display:flex;flex-wrap:wrap;gap:10px"></div>
+        <p style="font-size:12px;color:#94a3b8;margin-top:10px">In Jira: Ticket erstellen → „Anhang hinzufügen" → Bilder hochladen</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- Email Settings Modal -->
 <div id="emailModal" class="modal-overlay hidden" onclick="closeEmailBg(event)">
   <div class="modal-box" style="max-width:480px">
@@ -252,7 +302,7 @@ input[type=checkbox]{accent-color:#e0001b}
 
 
 const GIST_TOKEN = [103, 104, 112, 95, 121, 73, 87, 80, 85, 111, 104, 50, 111, 67, 70, 87, 53, 89, 74, 89, 106, 52, 66, 102, 89, 122, 122, 49, 65, 75, 121, 81, 110, 108, 52, 100, 121, 70, 85, 66].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "10c9506779338f3de6b41e0d995c77db";
+const GIST_ID    = "41bdab7621891b62c118fc01acbd8ca3";
 const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
 
 async function loadFromGist() {
@@ -698,6 +748,7 @@ function render(subs) {
             <p class="text-xs text-slate-400 mt-2">${nameStr}${new Date(s.ts).toLocaleString("de-DE")} ${imgBadge}</p>
           </div>
           <div class="flex gap-2 flex-shrink-0 items-center">
+            <button onclick="openJiraModal('${s.id}')" class="inline-flex items-center gap-1.5 rounded-lg bg-[#0052CC] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80">🎫 Jira</button>
             <button onclick="openModal('${s.id}')" class="inline-flex items-center gap-1.5 rounded-lg bg-[#111] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80">📄 Formular</button>
             <button onclick="toggleDetails('${s.id}')" id="btn-${s.id}" class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 text-slate-700 px-3 py-1.5 text-xs font-bold hover:bg-slate-200">Tabelle ↓</button>
             <button onclick="deleteSub('${s.id}')" class="text-xs text-red-400 hover:text-red-600 font-semibold px-1">✕</button>
