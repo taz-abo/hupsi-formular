@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>😅 HUPsi – Einreichungen</title>
+<title>HUPsi – Einreichungen</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -13,60 +13,52 @@ body{background:#f1f5f9;font-family:system-ui,sans-serif;color:#111}
 .dl{display:grid;grid-template-columns:180px 1fr;gap:6px 12px;font-size:12px;padding:5px 0;border-bottom:1px solid #f8fafc}
 .dk{color:#94a3b8;font-weight:600}
 .dv{color:#1e293b;white-space:pre-wrap;word-break:break-word}
-/* Modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
-.modal-box{background:#e5e7eb;border-radius:24px;width:100%;max-width:860px;overflow:hidden;position:relative;margin:auto}
-/* Filled form */
-.fm-header{background:#111;padding:28px 40px;color:#fff}
-.fm-notice{background:#fffbeb;border-bottom:1px solid #fde68a;padding:10px 40px;font-size:13px;color:#92400e}
-.fm-body{padding:28px 40px;display:flex;flex-direction:column;gap:18px}
-.fm-section{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px}
-.fm-section-alt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:22px}
-.fm-section-red{background:#fff5f5;border:1px solid #e0001b;border-radius:16px;padding:22px}
-.fm-h{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:14px}
-.fm-label{font-size:11px;font-weight:700;color:#64748b;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:6px}
-.fm-val{width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.6;min-height:44px;color:#111;white-space:pre-wrap;word-break:break-word}
-.fm-val-lg{min-height:84px}
-.fm-val-empty{color:#94a3b8;font-style:italic}
-.fm-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.fm-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.fm-chk{display:flex;gap:10px;align-items:center;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:13px}
-.fm-chk.checked{border-color:#e0001b;background:#fff5f5}
-.fm-chk .dot{width:16px;height:16px;border-radius:3px;border:1.5px solid #cbd5e1;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
-.fm-chk.checked .dot{background:#e0001b;border-color:#e0001b;color:#fff}
-.fm-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
-.fm-step-num{color:#e0001b;font-weight:800;min-width:20px;margin-top:2px;font-size:13px}
-.fm-sub-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
-@media print{
-  .modal-overlay{position:static;background:none;padding:0;display:block}
-  .modal-box{border-radius:0;max-width:none;box-shadow:none}
-  .no-print-modal{display:none!important}
-  body{background:#fff!important}
-  .fm-body{padding:12px 24px!important}
-  .fm-header{padding:20px 24px!important}
-  .fm-notice{padding:8px 24px!important}
-  .fm-step{break-inside:avoid;page-break-inside:avoid}
-  .fm-section,.fm-section-alt,.fm-section-red{break-inside:avoid;page-break-inside:avoid;margin-bottom:8px}
-  .step-img{
-    max-width:100%!important;
-    max-height:none!important;
-    width:auto!important;
-    display:block!important;
-    margin-top:8px!important;
-    border-radius:6px!important;
-    border:1px solid #e2e8f0!important;
-    break-inside:avoid!important;
-    page-break-inside:avoid!important;
-  }
-  @page{size:A4;margin:15mm 12mm}
-}
+/* Shared modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
+.modal-box{background:#e5e7eb;border-radius:24px;width:100%;overflow:hidden;position:relative;margin:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;background:#fff;padding:12px 24px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:10}
+/* Filled-form view */
+.fv-header{background:#111;padding:28px 40px;color:#fff}
+.fv-notice{background:#fffbeb;border-bottom:1px solid #fde68a;padding:10px 40px;font-size:13px;color:#92400e}
+.fv-body{padding:28px 40px;display:flex;flex-direction:column;gap:18px}
+.fv-sec{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px}
+.fv-sec-alt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:22px}
+.fv-sec-red{background:#fff5f5;border:1px solid #e0001b;border-radius:16px;padding:22px}
+.fv-h{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.fv-lbl{font-size:11px;font-weight:700;color:#64748b;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:6px}
+.fv-val{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.6;min-height:44px;color:#111;white-space:pre-wrap;word-break:break-word}
+.fv-val-lg{min-height:84px}
+.fv-val-empty{color:#94a3b8;font-style:italic}
+.fv-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fv-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.fv-chk{display:flex;gap:10px;align-items:center;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:13px}
+.fv-chk.on{border-color:#e0001b;background:#fff5f5}
+.fv-chk .dot{width:16px;height:16px;border-radius:3px;border:1.5px solid #cbd5e1;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.fv-chk.on .dot{background:#e0001b;border-color:#e0001b;color:#fff}
+.fv-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;break-inside:avoid;page-break-inside:avoid}
+.fv-step-n{color:#e0001b;font-weight:800;min-width:20px;margin-top:2px;font-size:13px}
+.fv-sub{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+/* Entry/email form fields */
 .ef{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.75rem;background:#fff;font-family:inherit;font-size:13px;min-height:80px;resize:vertical;outline:none;line-height:1.5}
 .ef:focus{border-color:#94a3b8}
-.ef-sm{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.6rem .75rem;background:#fff;font-family:inherit;font-size:13px;outline:none;min-height:40px}
+.ef-sm{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.6rem .75rem;background:#fff;font-family:inherit;font-size:13px;outline:none}
 .ef-sm:focus{border-color:#94a3b8}
 .echk{display:flex;gap:.5rem;align-items:flex-start;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem;cursor:pointer;font-size:13px}
 .echk:hover{border-color:#94a3b8}
 input[type=checkbox]{accent-color:#e0001b}
+/* Print */
+@media print{
+  .modal{position:static;background:none;padding:0;display:block}
+  .modal-box{border-radius:0;max-width:none;box-shadow:none}
+  .no-print{display:none!important}
+  body{background:#fff!important}
+  .fv-body{padding:12px 24px!important}
+  .fv-header{padding:20px 24px!important}
+  .fv-step{break-inside:avoid;page-break-inside:avoid}
+  .fv-sec,.fv-sec-alt,.fv-sec-red{break-inside:avoid;page-break-inside:avoid;margin-bottom:8px}
+  .step-img{max-width:100%!important;max-height:none!important;display:block!important;margin-top:8px!important;break-inside:avoid!important}
+  @page{size:A4;margin:15mm 12mm}
+}
 </style>
 </head>
 <body class="p-4 md:p-8">
@@ -78,666 +70,386 @@ input[type=checkbox]{accent-color:#e0001b}
       <p class="text-sm text-slate-400 mt-1" id="meta">Wird geladen…</p>
     </div>
     <div class="flex gap-2 flex-wrap">
-      <button onclick="exportExcel()" id="xlsBtn" disabled class="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-40">⬇ Excel-Export</button>
-      <button onclick="loadSubs()" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">↻ Aktualisieren</button>
-      <button onclick="openEmailModal()" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">✉️ Benachrichtigungen</button>
-      <button onclick="openEntryModal()" class="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-900">✎ Manuell hinzufügen</button>
+      <button id="xlsBtn" disabled class="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-40">⬇ Excel</button>
+      <button id="refreshBtn" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">↻ Aktualisieren</button>
+      <button id="emailBtn" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-300">✉️ Benachrichtigungen</button>
+      <button id="entryBtn" class="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-900">✎ Manuell hinzufügen</button>
       <a href="index.html" class="inline-flex items-center gap-2 rounded-xl bg-[#e0001b] px-4 py-2 text-sm font-bold text-white hover:opacity-90">+ Neues Formular</a>
     </div>
   </div>
   <div id="list"><p class="text-center text-slate-400 mt-16">Wird geladen…</p></div>
 </div>
 
-<!-- Jira Modal -->
-<div id="jiraModal" class="modal-overlay hidden" onclick="closeJiraBg(event)">
-  <div class="modal-box" style="max-width:680px">
-    <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
-      <span class="font-bold text-sm text-slate-700">🎫 Jira-Ticket erstellen</span>
-      <button onclick="closeJiraModal()" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
-    </div>
-    <div style="padding:24px;background:#f1f5f9;display:flex;flex-direction:column;gap:16px">
-
-      <div style="background:#e0f2fe;border:1px solid #7dd3fc;border-radius:12px;padding:12px 16px;font-size:13px;color:#0369a1;line-height:1.6">
-        <strong>So geht's:</strong> Text unten kopieren → in Jira-Ticket-Beschreibung einfügen. Bilder separat als Anhänge hochladen.
-      </div>
-
-      <!-- Summary field -->
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
-        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Ticket-Titel (Summary)</div>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="jiraSummary" readonly
-            style="flex:1;border:1px solid #e2e8f0;border-radius:10px;padding:8px 12px;font-size:13px;background:#f8fafc;font-family:inherit;color:#111;cursor:text">
-          <button onclick="copyJiraSummary()" id="copySummaryBtn"
-            style="background:#0052CC;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap">
-            Kopieren
-          </button>
-        </div>
-      </div>
-
-      <!-- Description -->
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em">Beschreibung (Description)</div>
-          <button onclick="copyJiraDesc()" id="copyDescBtn"
-            style="background:#0052CC;color:#fff;border:none;border-radius:10px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer">
-            Kopieren
-          </button>
-        </div>
-        <textarea id="jiraDesc" readonly
-          style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:12px;background:#f8fafc;font-family:monospace;min-height:280px;resize:vertical;color:#374151;line-height:1.5;outline:none"></textarea>
-      </div>
-
-      <!-- Images download -->
-      <div id="jiraImgSection" style="display:none;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
-        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">📎 Bilder als Anhänge herunterladen</div>
-        <div id="jiraImgList" style="display:flex;flex-wrap:wrap;gap:10px"></div>
-        <p style="font-size:12px;color:#94a3b8;margin-top:10px">In Jira: Ticket erstellen → „Anhang hinzufügen" → Bilder hochladen</p>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- Email Settings Modal -->
-<div id="emailModal" class="modal-overlay hidden" onclick="closeEmailBg(event)">
-  <div class="modal-box" style="max-width:480px">
-    <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
-      <span class="font-bold text-sm text-slate-700">✉️ Benachrichtigungen verwalten</span>
-      <button onclick="closeEmailModal()" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
-    </div>
-    <div style="padding:24px;background:#f1f5f9;display:flex;flex-direction:column;gap:16px">
-      <p style="font-size:13px;color:#475569;line-height:1.6">Bei jeder neuen Einreichung wird eine E-Mail an alle eingetragenen Adressen gesendet.</p>
-
-      <!-- Current list -->
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
-        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Aktuelle Empfänger</div>
-        <div id="emailList" style="display:flex;flex-direction:column;gap:8px"></div>
-      </div>
-
-      <!-- Add new -->
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px">
-        <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Neue Adresse hinzufügen</div>
-        <div style="display:flex;gap:8px">
-          <input type="email" id="newEmailInput" placeholder="name@taz.de"
-            style="flex:1;border:1px solid #cbd5e1;border-radius:10px;padding:8px 12px;font-size:13px;outline:none;font-family:inherit"
-            onkeydown="if(event.key==='Enter')addEmail()">
-          <button onclick="addEmail()" style="background:#111;color:#fff;border:none;border-radius:10px;padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">+ Hinzufügen</button>
-        </div>
-        <div id="emailAddErr" style="display:none;margin-top:8px;font-size:12px;color:#ef4444"></div>
-      </div>
-
-      <div id="emailSaveMsg" style="display:none;background:#dcfce7;border:1px solid #86efac;border-radius:10px;padding:10px 14px;font-size:13px;color:#16a34a;font-weight:600">✓ Gespeichert</div>
-    </div>
-  </div>
-</div>
-
-<!-- Entry Modal: manual submission -->
-<div id="entryModal" class="modal-overlay hidden" onclick="closeEntryBg(event)">
-  <div class="modal-box">
-    <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
-      <span class="font-bold text-sm text-slate-700">✎ Einreichung manuell hinzufügen</span>
-      <button onclick="closeEntryModal()" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
-    </div>
-    <div style="padding:28px 36px;display:flex;flex-direction:column;gap:16px;background:#e5e7eb">
-
-      <div style="background:#fff8e1;border:1px solid #fde68a;border-radius:12px;padding:12px 16px;font-size:13px;color:#92400e">
-        Aus E-Mail-Benachrichtigungen übertragen — Felder die nicht in der E-Mail standen einfach leer lassen.
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">👤 Name</div>
-        <input class="ef-sm" type="text" id="en_name" placeholder="Vor- und Nachname">
-        <div style="margin-top:12px">
-          <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:6px">Datum der Einreichung</label>
-          <input class="ef-sm" type="datetime-local" id="en_date">
-        </div>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🏷 Problemfeld</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px" id="en_pf_boxes"></div>
-        <input class="ef-sm" type="text" id="en_pfS" placeholder="Sonstiges Problemfeld">
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🎯 Ziel des Vorgangs</div>
-        <textarea class="ef" id="en_ziel" placeholder="Was wollte die Person konkret erreichen?"></textarea>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">📍 Ausgangssituation</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Kundentyp / Fall</label><textarea class="ef" id="en_ktyp"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Besonderheiten</label><textarea class="ef" id="en_beson"></textarea></div>
-        </div>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">📋 Ablauf</div>
-        <div style="display:flex;flex-direction:column;gap:8px" id="en_steps"></div>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">⚠️ Problem im Ablauf</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Bei welchem Schritt?</label><textarea class="ef" id="en_pSch"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Was genau ist passiert?</label><textarea class="ef" id="en_pWas"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Was wurde erwartet?</label><textarea class="ef" id="en_pErw"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Was war unklar?</label><textarea class="ef" id="en_pUnk"></textarea></div>
-        </div>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🗄 Benötigte Daten</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Welche Daten?</label><textarea class="ef" id="en_dBra"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Wo erwartet?</label><textarea class="ef" id="en_dErw"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Wo gefunden?</label><textarea class="ef" id="en_dFan"></textarea></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Prüfung am Ende?</label><textarea class="ef" id="en_dPru"></textarea></div>
-        </div>
-      </div>
-
-      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:14px">🔍 Zusatzfragen</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="en_zusatz"></div>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🔄 Workaround</div>
-        <textarea class="ef" id="en_work"></textarea>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">⏱ Aufwand und Häufigkeit</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Aktuelle Dauer</label><input class="ef-sm" type="text" id="en_dauI" placeholder="z. B. 15 Minuten"></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Erwartete Dauer</label><input class="ef-sm" type="text" id="en_dauE" placeholder="z. B. 3 Minuten"></div>
-          <div><label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;display:block;margin-bottom:6px">Häufigkeit</label><input class="ef-sm" type="text" id="en_haeu" placeholder="z. B. 5x pro Woche"></div>
-        </div>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🛡 Risiko</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px" id="en_risk_boxes"></div>
-        <textarea class="ef" id="en_rskT" placeholder="Beschreibung was schiefgehen kann"></textarea>
-      </div>
-
-      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">✨ Soll-Zustand</div>
-        <textarea class="ef" id="en_soll"></textarea>
-      </div>
-
-      <div style="background:#fff5f5;border:1px solid #e0001b;border-radius:14px;padding:20px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:12px">🎯 Fertig-Definition</div>
-        <textarea class="ef" id="en_fert" placeholder="Woran erkennt man, dass der Vorgang korrekt abgeschlossen ist?"></textarea>
-      </div>
-
-      <div id="en_saveErr" style="display:none" class="rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3"></div>
-
-      <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:4px">
-        <button onclick="closeEntryModal()" style="background:#f1f5f9;border:none;border-radius:12px;padding:11px 22px;font-weight:700;font-size:13px;cursor:pointer">Abbrechen</button>
-        <button onclick="saveManualEntry()" id="en_saveBtn" style="background:#16a34a;color:#fff;border:none;border-radius:12px;padding:11px 28px;font-weight:700;font-size:13px;cursor:pointer">Einreichung speichern</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal -->
-<div id="modal" class="modal-overlay hidden" onclick="closeModalBg(event)">
-  <div class="modal-box" id="modalBox">
-    <div class="no-print-modal flex items-center justify-between bg-white px-6 py-3 border-b border-slate-200 sticky top-0 z-10">
+<!-- Form view modal -->
+<div id="formModal" class="modal hidden">
+  <div class="modal-box" style="max-width:860px">
+    <div class="modal-header no-print">
       <span class="font-bold text-sm text-slate-700">Formular-Ansicht</span>
       <div class="flex gap-2">
-        <button onclick="window.print()" class="inline-flex items-center gap-2 rounded-lg bg-slate-400 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-500">🖨 Drucken</button>
-        <button onclick="closeModal()" class="inline-flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+        <button id="printBtn" class="inline-flex items-center gap-2 rounded-lg bg-slate-400 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-500">🖨 Drucken</button>
+        <button data-close="formModal" class="inline-flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
       </div>
     </div>
-    <div id="modalContent"></div>
+    <div id="formModalContent"></div>
+  </div>
+</div>
+
+<!-- Jira modal -->
+<div id="jiraModal" class="modal hidden">
+  <div class="modal-box" style="max-width:680px">
+    <div class="modal-header no-print">
+      <span class="font-bold text-sm text-slate-700">🎫 Jira-Ticket erstellen</span>
+      <button data-close="jiraModal" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+    </div>
+    <div class="p-6 bg-slate-100 flex flex-col gap-4">
+      <div class="rounded-xl bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800">
+        <strong>So geht's:</strong> Titel und Beschreibung kopieren → in Jira einfügen. Bilder separat als Anhänge hochladen.
+      </div>
+      <div class="bg-white border border-slate-200 rounded-2xl p-4">
+        <div class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Ticket-Titel</div>
+        <div class="flex gap-2">
+          <input id="jiraSummary" readonly type="text" class="ef-sm flex-1 bg-slate-50 cursor-text">
+          <button id="copySummaryBtn" class="rounded-xl bg-[#0052CC] text-white px-4 py-2 text-xs font-bold hover:opacity-90 whitespace-nowrap">Kopieren</button>
+        </div>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-xs font-bold text-slate-500 uppercase tracking-wide">Beschreibung</div>
+          <button id="copyDescBtn" class="rounded-xl bg-[#0052CC] text-white px-4 py-2 text-xs font-bold hover:opacity-90">Kopieren</button>
+        </div>
+        <textarea id="jiraDesc" readonly class="ef bg-slate-50 font-mono text-xs" style="min-height:260px"></textarea>
+      </div>
+      <div id="jiraAttachSection" class="hidden bg-white border border-slate-200 rounded-2xl p-4">
+        <div class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">📎 Anhänge herunterladen</div>
+        <div id="jiraAttachList" class="flex flex-wrap gap-3"></div>
+        <p class="text-xs text-slate-400 mt-3">In Jira: Ticket erstellen → Anhang hinzufügen → Dateien hochladen</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Email modal -->
+<div id="emailModal" class="modal hidden">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-header no-print">
+      <span class="font-bold text-sm text-slate-700">✉️ Benachrichtigungen</span>
+      <button data-close="emailModal" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+    </div>
+    <div class="p-6 bg-slate-100 flex flex-col gap-4">
+      <p class="text-sm text-slate-600">Bei jeder neuen Einreichung wird eine E-Mail an alle eingetragenen Adressen gesendet.</p>
+      <div class="bg-white border border-slate-200 rounded-2xl p-4">
+        <div class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Aktuelle Empfänger</div>
+        <div id="emailList" class="flex flex-col gap-2"></div>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-2xl p-4">
+        <div class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Neue Adresse</div>
+        <div class="flex gap-2">
+          <input type="email" id="newEmailInput" placeholder="name@taz.de" class="ef-sm flex-1">
+          <button id="addEmailBtn" class="rounded-xl bg-slate-900 text-white px-4 py-2 text-sm font-bold hover:opacity-90 whitespace-nowrap">+ Hinzufügen</button>
+        </div>
+        <div id="emailAddErr" class="hidden mt-2 text-xs text-red-500"></div>
+      </div>
+      <div id="emailSaveMsg" class="hidden rounded-xl bg-green-50 border border-green-200 p-3 text-sm text-green-700 font-semibold">✓ Gespeichert</div>
+    </div>
+  </div>
+</div>
+
+<!-- Entry modal -->
+<div id="entryModal" class="modal hidden">
+  <div class="modal-box" style="max-width:860px">
+    <div class="modal-header no-print">
+      <span class="font-bold text-sm text-slate-700">✎ Einreichung manuell hinzufügen</span>
+      <button data-close="entryModal" class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">✕ Schließen</button>
+    </div>
+    <div class="p-8 bg-slate-100 flex flex-col gap-4">
+      <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-sm text-amber-800">
+        Aus E-Mail-Benachrichtigungen übertragen — nicht vorhandene Felder einfach leer lassen.
+      </div>
+      <div id="entryFormContent"></div>
+      <div id="en_saveErr" class="hidden rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3"></div>
+      <div class="flex justify-end gap-3">
+        <button data-close="entryModal" class="rounded-xl bg-slate-200 border-none px-6 py-2.5 text-sm font-bold text-slate-700 cursor-pointer hover:bg-slate-300">Abbrechen</button>
+        <button id="en_saveBtn" class="rounded-xl bg-green-600 text-white border-none px-6 py-2.5 text-sm font-bold cursor-pointer hover:bg-green-700">Einreichung speichern</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
+'use strict';
 
-
-
-
+// ── Constants ──────────────────────────────────────────────
 const GIST_TOKEN = [103, 104, 112, 95, 121, 73, 87, 80, 85, 111, 104, 50, 111, 67, 70, 87, 53, 89, 74, 89, 106, 52, 66, 102, 89, 122, 122, 49, 65, 75, 121, 81, 110, 108, 52, 100, 121, 70, 85, 66].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "d130a2039badc4d52032a7b1569ccf08";
+const GIST_ID    = "792ef30f2c9f14b442627bf7b7cdfad5";
 const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
+const GIST_HEADERS = {
+  'Authorization': `token ${GIST_TOKEN}`,
+  'Accept': 'application/vnd.github.v3+json',
+  'Content-Type': 'application/json',
+};
+
+const PF_OPTIONS = [
+  'Buchhaltung / OP/AP / Rechnungen', 'Storno / Rechnungskorrektur',
+  'Adressänderung', 'Mahnwesen / Zahlung / Rücklastschrift',
+  'Fehlermeldung', 'Wiedervorlage / Organisation',
+  'Oberfläche / Übersicht', 'Trägerdienste / Kommunikation',
+];
+const RISK_OPTIONS = [
+  'falsche Rechnung', 'Kunde falsch informiert', 'Zahlung falsch gebucht',
+  'Vorgang bleibt liegen', 'zusätzlicher manueller Aufwand', 'anderes Risiko',
+];
+const ZUSATZ = [
+  ['zBuch', 'Buchhaltung / Rechnungen'],  ['zSto', 'Storno / Rechnungskorrektur'],
+  ['zAdr',  'Adressänderung'],             ['zMah', 'Mahnwesen / Zahlung'],
+  ['zFeh',  'Fehlermeldung'],              ['zWie', 'Wiedervorlage / Organisation'],
+  ['zObe',  'Oberfläche / Übersicht'],     ['zTra', 'Trägerdienste / Kommunikation'],
+];
+const STEP_COUNT = 6;
+const DEFAULT_EMAIL = 'okur@taz.de';
+
+const TABLE_FIELDS = [
+  ['Name',              s => s.name],
+  ['Problemfeld',       s => (s.pf || []).join(', ')],
+  ['Sonstiges PF',      s => s.pfS],
+  ['Ziel',              s => s.ziel],
+  ['Kundentyp',         s => s.ktyp],
+  ['Besonderheiten',    s => s.beson],
+  ['Ablauf',            s => (s.abl || []).filter(Boolean).map((x, i) => `${i + 1}. ${x}`).join('\n')],
+  ['Problem: Schritt',  s => s.pSch],
+  ['Problem: Passiert', s => s.pWas],
+  ['Problem: Erwartet', s => s.pErw],
+  ['Problem: Unklar',   s => s.pUnk],
+  ['Daten: Benötigt',   s => s.dBra],
+  ['Daten: Wo erwartet',s => s.dErw],
+  ['Daten: Wo gefunden',s => s.dFan],
+  ['Daten: Prüfung',    s => s.dPru],
+  ...ZUSATZ.map(([k, l]) => [`Zusatz: ${l}`, s => s[k]]),
+  ['Workaround',        s => s.work],
+  ['Akt. Dauer',        s => s.dauI],
+  ['Erw. Dauer',        s => s.dauE],
+  ['Häufigkeit',        s => s.haeu],
+  ['Risiken',           s => (s.risiken || []).join(', ')],
+  ['Risikobeschr.',     s => s.rskT],
+  ['Soll-Zustand',      s => s.soll],
+  ['Fertig-Def.',       s => s.fert],
+];
+
+// ── State ──────────────────────────────────────────────────
+let allSubs = [];
+
+// ── Gist API ───────────────────────────────────────────────
+function credentialsOk() {
+  return !GIST_TOKEN.startsWith('__') && !GIST_ID.startsWith('__');
+}
 
 async function loadFromGist() {
-  const res = await fetch(GIST_URL, {
-    headers: { "Authorization": `token ${GIST_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
-  });
-  const data = await res.json();
-  return JSON.parse(data.files["submissions.json"].content).submissions || [];
+  const res = await fetch(GIST_URL, { headers: GIST_HEADERS });
+  if (!res.ok) throw new Error(`Gist-Fehler ${res.status}`);
+  const json = await res.json();
+  return JSON.parse(json.files['submissions.json'].content).submissions || [];
 }
 
 async function saveAllToGist(submissions) {
   const res = await fetch(GIST_URL, {
-    method: "PATCH",
-    headers: {
-      "Authorization": `token ${GIST_TOKEN}`,
-      "Content-Type": "application/json",
-      "Accept": "application/vnd.github.v3+json"
-    },
-    body: JSON.stringify({ files: { "submissions.json": { content: JSON.stringify({ submissions }) } } })
+    method: 'PATCH',
+    headers: GIST_HEADERS,
+    body: JSON.stringify({ files: { 'submissions.json': { content: JSON.stringify({ submissions }) } } }),
   });
-  if (!res.ok) throw new Error("Speichern fehlgeschlagen (" + res.status + ")");
+  if (!res.ok) throw new Error(`Speichern fehlgeschlagen ${res.status}`);
 }
 
-const PF_ALL   = ["Buchhaltung / OP/AP / Rechnungen","Storno / Rechnungskorrektur","Adressänderung","Mahnwesen / Zahlung / Rücklastschrift","Fehlermeldung","Wiedervorlage / Organisation","Oberfläche / Übersicht","Trägerdienste / Kommunikation"];
-const RISK_ALL = ["falsche Rechnung","Kunde falsch informiert","Zahlung falsch gebucht","Vorgang bleibt liegen","zusätzlicher manueller Aufwand","anderes Risiko"];
-const ZUSATZ_ALL = [["zBuch","Buchhaltung / Rechnungen"],["zSto","Storno / Rechnungskorrektur"],["zAdr","Adressänderung"],["zMah","Mahnwesen / Zahlung"],["zFeh","Fehlermeldung"],["zWie","Wiedervorlage / Organisation"],["zObe","Oberfläche / Übersicht"],["zTra","Trägerdienste / Kommunikation"]];
-
-const LABELS = [
-  ["Name",           s=>s.name],
-  ["Problemfeld",    s=>(s.pf||[]).join(", ")],
-  ["Sonstiges PF",   s=>s.pfS],
-  ["Ziel",           s=>s.ziel],
-  ["Kundentyp",      s=>s.ktyp],
-  ["Besonderheiten", s=>s.beson],
-  ["Ablauf",         s=>(s.abl||[]).filter(Boolean).map((x,i)=>`${i+1}. ${x}`).join("\n")],
-  ["Problem: Schritt",   s=>s.pSch],
-  ["Problem: Passiert",  s=>s.pWas],
-  ["Problem: Erwartet",  s=>s.pErw],
-  ["Problem: Unklar",    s=>s.pUnk],
-  ["Daten: Benötigt",    s=>s.dBra],
-  ["Daten: Wo erwartet", s=>s.dErw],
-  ["Daten: Wo gefunden", s=>s.dFan],
-  ["Daten: Prüfung",     s=>s.dPru],
-  ...ZUSATZ_ALL.map(([k,l])=>[`Zusatz: ${l}`,s=>s[k]]),
-  ["Workaround",    s=>s.work],
-  ["Akt. Dauer",    s=>s.dauI],
-  ["Erw. Dauer",    s=>s.dauE],
-  ["Häufigkeit",    s=>s.haeu],
-  ["Risiken",       s=>(s.risiken||[]).join(", ")],
-  ["Risikobeschr.", s=>s.rskT],
-  ["Soll-Zustand",  s=>s.soll],
-  ["Fertig-Def.",   s=>s.fert],
-];
-
-let allSubs = [];
-
-
-const PF_ALL_OPT = ["Buchhaltung / OP/AP / Rechnungen","Storno / Rechnungskorrektur","Adressänderung","Mahnwesen / Zahlung / Rücklastschrift","Fehlermeldung","Wiedervorlage / Organisation","Oberfläche / Übersicht","Trägerdienste / Kommunikation"];
-const RISK_ALL_OPT = ["falsche Rechnung","Kunde falsch informiert","Zahlung falsch gebucht","Vorgang bleibt liegen","zusätzlicher manueller Aufwand","anderes Risiko"];
-const ZUSATZ_OPT = [["en_zBuch","Buchhaltung / Rechnungen"],["en_zSto","Storno / Rechnungskorrektur"],["en_zAdr","Adressänderung"],["en_zMah","Mahnwesen / Zahlung"],["en_zFeh","Fehlermeldung"],["en_zWie","Wiedervorlage / Organisation"],["en_zObe","Oberfläche / Übersicht"],["en_zTra","Trägerdienste / Kommunikation"]];
-
-function openEntryModal() {
-  // Build checkboxes
-  document.getElementById("en_pf_boxes").innerHTML = PF_ALL_OPT.map(o =>
-    `<label class="echk"><input type="checkbox" name="en_pf" value="${o}"> ${o}</label>`).join("");
-  document.getElementById("en_risk_boxes").innerHTML = RISK_ALL_OPT.map(o =>
-    `<label class="echk"><input type="checkbox" name="en_risk" value="${o}"> ${o}</label>`).join("");
-  // Build steps
-  document.getElementById("en_steps").innerHTML = [1,2,3,4,5,6].map(i =>
-    `<div style="display:flex;gap:10px;align-items:flex-start">
-      <span style="color:#e0001b;font-weight:800;margin-top:10px;min-width:20px">${i}.</span>
-      <textarea class="ef" style="min-height:46px" id="en_abl${i}" placeholder="Schritt ${i}"></textarea>
-    </div>`).join("");
-  // Build zusatz
-  document.getElementById("en_zusatz").innerHTML = ZUSATZ_OPT.map(([id,label]) =>
-    `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px">
-      <div style="font-weight:700;font-size:12px;margin-bottom:8px">${label}</div>
-      <textarea class="ef" id="${id}" style="min-height:60px"></textarea>
-    </div>`).join("");
-  // Default date to now
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  document.getElementById("en_date").value = now.toISOString().slice(0,16);
-  // Reset save state
-  document.getElementById("en_saveErr").style.display = "none";
-  document.getElementById("en_saveBtn").disabled = false;
-  document.getElementById("en_saveBtn").textContent = "Einreichung speichern";
-  document.getElementById("entryModal").classList.remove("hidden");
-  document.body.style.overflow = "hidden";
-}
-
-function closeEntryModal() {
-  document.getElementById("entryModal").classList.add("hidden");
-  document.body.style.overflow = "";
-}
-function closeEntryBg(e) { if (e.target === document.getElementById("entryModal")) closeEntryModal(); }
-
-async function saveManualEntry() {
-  const btn = document.getElementById("en_saveBtn");
-  btn.disabled = true;
-  btn.textContent = "Wird gespeichert …";
-  const checked = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
-  const dateVal = document.getElementById("en_date").value;
-  const ts = dateVal ? new Date(dateVal).getTime() : Date.now();
-  const entry = {
-    id: ts.toString() + Math.random().toString(36).slice(2,6),
-    ts,
-    name: document.getElementById("en_name").value,
-    pf: checked("en_pf"),
-    pfS: document.getElementById("en_pfS").value,
-    ziel: document.getElementById("en_ziel").value,
-    ktyp: document.getElementById("en_ktyp").value,
-    beson: document.getElementById("en_beson").value,
-    abl: [1,2,3,4,5,6].map(i => document.getElementById("en_abl"+i).value),
-    ablImg: ["","","","","",""],
-    pSch: document.getElementById("en_pSch").value,
-    pWas: document.getElementById("en_pWas").value,
-    pErw: document.getElementById("en_pErw").value,
-    pUnk: document.getElementById("en_pUnk").value,
-    dBra: document.getElementById("en_dBra").value,
-    dErw: document.getElementById("en_dErw").value,
-    dFan: document.getElementById("en_dFan").value,
-    dPru: document.getElementById("en_dPru").value,
-    zBuch: document.getElementById("en_zBuch").value,
-    zSto: document.getElementById("en_zSto").value,
-    zAdr: document.getElementById("en_zAdr").value,
-    zMah: document.getElementById("en_zMah").value,
-    zFeh: document.getElementById("en_zFeh").value,
-    zWie: document.getElementById("en_zWie").value,
-    zObe: document.getElementById("en_zObe").value,
-    zTra: document.getElementById("en_zTra").value,
-    work: document.getElementById("en_work").value,
-    dauI: document.getElementById("en_dauI").value,
-    dauE: document.getElementById("en_dauE").value,
-    haeu: document.getElementById("en_haeu").value,
-    risiken: checked("en_risk"),
-    rskT: document.getElementById("en_rskT").value,
-    soll: document.getElementById("en_soll").value,
-    fert: document.getElementById("en_fert").value,
-    _manualEntry: true,
-  };
-  try {
-    const existing = await loadFromGist();
-    existing.push(entry);
-    await saveAllToGist(existing);
-    allSubs = existing.slice().reverse();
-    render(allSubs);
-    closeEntryModal();
-  } catch(e) {
-    const err = document.getElementById("en_saveErr");
-    err.textContent = "Fehler: " + e.message;
-    err.style.display = "block";
-    btn.disabled = false;
-    btn.textContent = "Einreichung speichern";
-  }
-}
-
-const DEFAULT_EMAILS = ["okur@taz.de"];
-
-function getEmails() {
-  try {
-    return JSON.parse(localStorage.getItem("hupsi-notify-emails") || "null") || DEFAULT_EMAILS;
-  } catch { return DEFAULT_EMAILS; }
-}
-function saveEmails(list) {
-  localStorage.setItem("hupsi-notify-emails", JSON.stringify(list));
-}
-
-function openEmailModal() {
-  renderEmailList();
-  document.getElementById("newEmailInput").value = "";
-  document.getElementById("emailAddErr").style.display = "none";
-  document.getElementById("emailSaveMsg").style.display = "none";
-  document.getElementById("emailModal").classList.remove("hidden");
-  document.body.style.overflow = "hidden";
-}
-function closeEmailModal() {
-  document.getElementById("emailModal").classList.add("hidden");
-  document.body.style.overflow = "";
-}
-function closeEmailBg(e) { if (e.target === document.getElementById("emailModal")) closeEmailModal(); }
-
-function renderEmailList() {
-  const emails = getEmails();
-  const list = document.getElementById("emailList");
-  if (!emails.length) {
-    list.innerHTML = '<p style="font-size:13px;color:#94a3b8;font-style:italic">Keine Empfänger eingetragen.</p>';
-    return;
-  }
-  list.innerHTML = emails.map((email, i) => `
-    <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:9px 12px">
-      <span style="font-size:13px;color:#111">✉️ ${email}</span>
-      <button onclick="removeEmail(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px;font-weight:700;padding:2px 6px;border-radius:6px" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'">✕ Entfernen</button>
-    </div>`).join("");
-}
-
-function addEmail() {
-  const input = document.getElementById("newEmailInput");
-  const err = document.getElementById("emailAddErr");
-  const val = input.value.trim().toLowerCase();
-  err.style.display = "none";
-  if (!val || !/^[^@]+@[^@]+\.[^@]+$/.test(val)) {
-    err.textContent = "Bitte eine gültige E-Mail-Adresse eingeben.";
-    err.style.display = "block"; return;
-  }
-  const emails = getEmails();
-  if (emails.includes(val)) {
-    err.textContent = "Diese Adresse ist bereits eingetragen.";
-    err.style.display = "block"; return;
-  }
-  emails.push(val);
-  saveEmails(emails);
-  input.value = "";
-  renderEmailList();
-  showEmailSaved();
-}
-
-function removeEmail(i) {
-  const emails = getEmails();
-  emails.splice(i, 1);
-  saveEmails(emails);
-  renderEmailList();
-  showEmailSaved();
-}
-
-function showEmailSaved() {
-  const msg = document.getElementById("emailSaveMsg");
-  msg.style.display = "block";
-  setTimeout(() => msg.style.display = "none", 2000);
-}
-
-function credentialsOk() {
-  return !GIST_TOKEN.includes("__") && !GIST_ID.includes("__");
-}
-
+// ── Load & render ──────────────────────────────────────────
 async function loadSubs() {
+  const list = document.getElementById('list');
   if (!credentialsOk()) {
-    document.getElementById("list").innerHTML = '<div class="rounded-2xl border border-red-200 bg-red-50 p-8 text-center mt-4"><p class="font-bold text-red-800 mb-2">Nicht konfiguriert</p><p class="text-sm text-red-700">Bitte <code>deploy.py</code> erneut ausführen, um den Datenspeicher einzurichten.</p></div>';
-    document.getElementById("meta").textContent = "Nicht konfiguriert";
+    list.innerHTML = '<div class="rounded-2xl border border-red-200 bg-red-50 p-8 text-center mt-4"><p class="font-bold text-red-800 mb-2">Nicht konfiguriert</p><p class="text-sm text-red-700">Bitte <code>🚀 Deploy.command</code> ausführen.</p></div>';
+    document.getElementById('meta').textContent = 'Nicht konfiguriert';
     return;
   }
-  document.getElementById("list").innerHTML = '<p class="text-center text-slate-400 mt-16">Wird geladen…</p>';
+  list.innerHTML = '<p class="text-center text-slate-400 mt-16">Wird geladen…</p>';
   try {
     allSubs = (await loadFromGist()).slice().reverse();
     render(allSubs);
-  } catch(e) {
-    document.getElementById("list").innerHTML = `<p class="text-center text-red-400 mt-16">Fehler beim Laden: ${e.message}</p>`;
+  } catch (e) {
+    list.innerHTML = `<p class="text-center text-red-400 mt-16">Fehler: ${e.message}</p>`;
   }
 }
 
-function escHtml(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+// ── Helpers ────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/\n/g, '<br>');
 }
 
-function fmv(val, large) {
-  const empty = !val || (Array.isArray(val) && !val.length);
-  return `<div class="fm-val${large?" fm-val-lg":""}${empty?" fm-val-empty":""}">${empty?"–":escHtml(String(val))}</div>`;
+function fval(v, large = false) {
+  const empty = !v || (Array.isArray(v) && !v.length);
+  return `<div class="fv-val${large ? ' fv-val-lg' : ''}${empty ? ' fv-val-empty' : ''}">${empty ? '–' : esc(String(v))}</div>`;
 }
 
-function chk(val, all) {
-  return all.map(opt=>{
-    const on=(val||[]).includes(opt);
-    return `<div class="fm-chk${on?" checked":""}"><span class="dot">${on?"✓":""}</span>${escHtml(opt)}</div>`;
-  }).join("");
+function checkboxRow(val, options) {
+  return options.map(opt => {
+    const on = (val || []).includes(opt);
+    return `<div class="fv-chk${on ? ' on' : ''}"><span class="dot">${on ? '✓' : ''}</span>${esc(opt)}</div>`;
+  }).join('');
 }
 
+function attachmentHtml(src, meta) {
+  if (!src) return '';
+  const isPdf = meta?.type === 'pdf' || src.startsWith('data:application/pdf');
+  const name = esc(meta?.name || (isPdf ? 'anhang.pdf' : 'bild.jpg'));
+  if (isPdf) {
+    return `<a href="${src}" download="${name}" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;font-size:12px;color:#1e293b;text-decoration:none;font-weight:600">📄 ${name} herunterladen</a>`;
+  }
+  return `<img class="step-img" src="${src}" style="margin-top:8px;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #e2e8f0;object-fit:contain;display:block" alt="">`;
+}
+
+// ── Form view builder ──────────────────────────────────────
 function buildFormView(s) {
-  const abl = (s.abl||[]).map((txt,i)=>{
-    const src=(s.ablImg||[])[i];
-    const meta=(s.ablMeta||[])[i];
-    let attachment = "";
-    if (src) {
-      if (meta?.type === "pdf" || src.startsWith("data:application/pdf")) {
-        attachment = `<a href="${src}" download="${meta?.name||"anhang.pdf"}" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;font-size:12px;color:#1e293b;text-decoration:none;font-weight:600">📄 ${escHtml(meta?.name||"anhang.pdf")} herunterladen</a>`;
-      } else {
-        attachment = `<img src="${src}" style="margin-top:8px;max-width:100%;max-height:220px;border-radius:10px;border:1px solid #e2e8f0;object-fit:contain;display:block">`;
-      }
-    }
-    return `<div class="fm-step"><span class="fm-step-num">${i+1}.</span><div style="flex:1">
-      <div class="fm-val" style="min-height:36px">${txt?escHtml(txt):'<span style="color:#94a3b8;font-style:italic">–</span>'}</div>
-      ${attachment}
-    </div></div>`;
-  }).join("");
+  const steps = (s.abl || []).map((txt, i) => {
+    const att = attachmentHtml((s.ablImg || [])[i], (s.ablMeta || [])[i]);
+    return `<div class="fv-step">
+      <span class="fv-step-n">${i + 1}.</span>
+      <div style="flex:1">
+        <div class="fv-val" style="min-height:36px">${txt ? esc(txt) : '<span style="color:#94a3b8;font-style:italic">–</span>'}</div>
+        ${att}
+      </div>
+    </div>`;
+  }).join('');
 
-  const zusatz = ZUSATZ_ALL.map(([k,l])=>`
-    <div class="fm-sub-card">
+  const zusatzCards = ZUSATZ.map(([k, l]) => `
+    <div class="fv-sub">
       <div style="font-weight:700;font-size:13px;margin-bottom:8px">${l}</div>
-      ${fmv(s[k],true)}
-    </div>`).join("");
+      ${fval(s[k], true)}
+    </div>`).join('');
 
   return `
-    <div class="fm-header">
-      <div style="font-size:26px;font-weight:900;margin-bottom:8px">HUPsi-Formular</div>
-      <div style="font-size:13px;color:#cbd5e1;line-height:1.6;max-width:560px">Strukturierte Erhebung konkreter Problemfälle.</div>
-      <div style="margin-top:12px;font-size:12px;color:#94a3b8">Eingereicht: ${new Date(s.ts).toLocaleString("de-DE")}${s.name?" · "+escHtml(s.name):""}</div>
+    <div class="fv-header">
+      <div style="font-size:26px;font-weight:900;margin-bottom:4px">HUPsi-Formular</div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:8px">(HUP system improvement)</div>
+      <div style="font-size:12px;color:#64748b">Eingereicht: ${new Date(s.ts).toLocaleString('de-DE')}${s.name ? ' · ' + esc(s.name) : ''}</div>
     </div>
-    <div class="fm-notice"><strong>Hinweis:</strong> Pro Formular nur einen konkreten Problemfall.</div>
-    <div class="fm-body">
-      <div class="fm-section"><div class="fm-h"><span style="color:#e0001b">👤</span>1. Name</div>${fmv(s.name)}</div>
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">🏷</span>2. Problemfeld</div>
-        <div class="fm-grid2" style="margin-bottom:12px">${chk(s.pf,PF_ALL)}</div>
-        <div><span class="fm-label">Sonstiges</span>${fmv(s.pfS)}</div>
+    <div class="fv-notice"><strong>Hinweis:</strong> Pro Formular nur einen konkreten Problemfall.</div>
+    <div class="fv-body">
+      <div class="fv-sec"><div class="fv-h"><span style="color:#e0001b">👤</span>1. Name</div>${fval(s.name)}</div>
+
+      <div class="fv-sec">
+        <div class="fv-h"><span style="color:#e0001b">🏷</span>2. Problemfeld</div>
+        <div class="fv-grid2" style="margin-bottom:12px">${checkboxRow(s.pf, PF_OPTIONS)}</div>
+        <div><span class="fv-lbl">Sonstiges</span>${fval(s.pfS)}</div>
       </div>
-      <div class="fm-section"><div class="fm-h"><span style="color:#e0001b">🎯</span>3. Ziel des Vorgangs</div>${fmv(s.ziel,true)}</div>
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">📍</span>4. Ausgangssituation</div>
-        <div class="fm-grid2">
-          <div><span class="fm-label">Kundentyp / Fall</span>${fmv(s.ktyp,true)}</div>
-          <div><span class="fm-label">Besonderheiten</span>${fmv(s.beson,true)}</div>
+
+      <div class="fv-sec"><div class="fv-h"><span style="color:#e0001b">🎯</span>3. Ziel des Vorgangs</div>${fval(s.ziel, true)}</div>
+
+      <div class="fv-sec">
+        <div class="fv-h"><span style="color:#e0001b">📍</span>4. Ausgangssituation</div>
+        <div class="fv-grid2">
+          <div><span class="fv-lbl">Kundentyp / Fall</span>${fval(s.ktyp, true)}</div>
+          <div><span class="fv-lbl">Besonderheiten</span>${fval(s.beson, true)}</div>
         </div>
       </div>
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">📋</span>5. Ablauf Schritt für Schritt</div>
-        ${abl}
+
+      <div class="fv-sec">
+        <div class="fv-h"><span style="color:#e0001b">📋</span>5. Ablauf Schritt für Schritt</div>
+        ${steps}
       </div>
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">⚠️</span>6. Problem im Ablauf</div>
-        <div class="fm-grid2">
-          <div><span class="fm-label">Bei welchem Schritt?</span>${fmv(s.pSch,true)}</div>
-          <div><span class="fm-label">Was genau ist passiert?</span>${fmv(s.pWas,true)}</div>
-          <div><span class="fm-label">Was hattest du erwartet?</span>${fmv(s.pErw,true)}</div>
-          <div><span class="fm-label">Was war unklar?</span>${fmv(s.pUnk,true)}</div>
+
+      <div class="fv-sec">
+        <div class="fv-h"><span style="color:#e0001b">⚠️</span>6. Problem im Ablauf</div>
+        <div class="fv-grid2">
+          <div><span class="fv-lbl">Bei welchem Schritt?</span>${fval(s.pSch, true)}</div>
+          <div><span class="fv-lbl">Was genau ist passiert?</span>${fval(s.pWas, true)}</div>
+          <div><span class="fv-lbl">Was hattest du erwartet?</span>${fval(s.pErw, true)}</div>
+          <div><span class="fv-lbl">Was war unklar?</span>${fval(s.pUnk, true)}</div>
         </div>
       </div>
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">🗄</span>7. Benötigte Daten</div>
-        <div class="fm-grid2">
-          <div><span class="fm-label">Welche Daten brauchst du?</span>${fmv(s.dBra,true)}</div>
-          <div><span class="fm-label">Wo erwartest du sie?</span>${fmv(s.dErw,true)}</div>
-          <div><span class="fm-label">Wo hast du sie gefunden?</span>${fmv(s.dFan,true)}</div>
-          <div><span class="fm-label">Prüfung am Ende?</span>${fmv(s.dPru,true)}</div>
+
+      <div class="fv-sec">
+        <div class="fv-h"><span style="color:#e0001b">🗄</span>7. Benötigte Daten</div>
+        <div class="fv-grid2">
+          <div><span class="fv-lbl">Welche Daten?</span>${fval(s.dBra, true)}</div>
+          <div><span class="fv-lbl">Wo erwartet?</span>${fval(s.dErw, true)}</div>
+          <div><span class="fv-lbl">Wo gefunden?</span>${fval(s.dFan, true)}</div>
+          <div><span class="fv-lbl">Prüfung am Ende?</span>${fval(s.dPru, true)}</div>
         </div>
       </div>
-      <div class="fm-section-alt">
-        <div class="fm-h"><span style="color:#e0001b">🔍</span>8. Zusatzfragen</div>
-        <div class="fm-grid2">${zusatz}</div>
+
+      <div class="fv-sec-alt">
+        <div class="fv-h"><span style="color:#e0001b">🔍</span>8. Zusatzfragen</div>
+        <div class="fv-grid2">${zusatzCards}</div>
       </div>
-      <div class="fm-section"><div class="fm-h"><span style="color:#e0001b">🔄</span>9. Workaround</div>${fmv(s.work,true)}</div>
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">⏱</span>10. Aufwand und Häufigkeit</div>
-        <div class="fm-grid3">
-          <div><span class="fm-label">Aktuelle Dauer</span>${fmv(s.dauI)}</div>
-          <div><span class="fm-label">Erwartete Dauer</span>${fmv(s.dauE)}</div>
-          <div><span class="fm-label">Häufigkeit</span>${fmv(s.haeu)}</div>
+
+      <div class="fv-sec"><div class="fv-h"><span style="color:#e0001b">🔄</span>9. Workaround</div>${fval(s.work, true)}</div>
+
+      <div class="fv-sec">
+        <div class="fv-h"><span style="color:#e0001b">⏱</span>10. Aufwand und Häufigkeit</div>
+        <div class="fv-grid3">
+          <div><span class="fv-lbl">Aktuelle Dauer</span>${fval(s.dauI)}</div>
+          <div><span class="fv-lbl">Erwartete Dauer</span>${fval(s.dauE)}</div>
+          <div><span class="fv-lbl">Häufigkeit</span>${fval(s.haeu)}</div>
         </div>
       </div>
-      <div class="fm-section">
-        <div class="fm-h"><span style="color:#e0001b">🛡</span>11. Risiko / Fehlerfolgen</div>
-        <div class="fm-grid2" style="margin-bottom:12px">${chk(s.risiken,RISK_ALL)}</div>
-        ${fmv(s.rskT,true)}
+
+      <div class="fv-sec">
+        <div class="fv-h"><span style="color:#e0001b">🛡</span>11. Risiko / Fehlerfolgen</div>
+        <div class="fv-grid2" style="margin-bottom:12px">${checkboxRow(s.risiken, RISK_OPTIONS)}</div>
+        ${fval(s.rskT, true)}
       </div>
-      <div class="fm-section"><div class="fm-h"><span style="color:#e0001b">✨</span>12. Soll-Zustand</div>${fmv(s.soll,true)}</div>
-      <div class="fm-section-red"><div class="fm-h"><span style="color:#e0001b">🎯</span>13. Fertig-Definition</div>${fmv(s.fert,true)}</div>
+
+      <div class="fv-sec"><div class="fv-h"><span style="color:#e0001b">✨</span>12. Soll-Zustand</div>${fval(s.soll, true)}</div>
+      <div class="fv-sec-red"><div class="fv-h"><span style="color:#e0001b">🎯</span>13. Fertig-Definition</div>${fval(s.fert, true)}</div>
+
       <div style="border-top:1px solid #e2e8f0;padding-top:16px;font-size:12px;color:#94a3b8;text-align:center">
         Dieses Formular dient der strukturierten Erhebung konkreter Problemfälle.
       </div>
     </div>`;
 }
 
-function openModal(id) {
-  const s = allSubs.find(x => x.id === id);
-  if (!s) return;
-  document.getElementById("modalContent").innerHTML = buildFormView(s);
-  document.getElementById("modal").classList.remove("hidden");
-  document.body.style.overflow = "hidden";
-}
-function closeModal() {
-  document.getElementById("modal").classList.add("hidden");
-  document.body.style.overflow = "";
-}
-function closeModalBg(e) { if (e.target === document.getElementById("modal")) closeModal(); }
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-
-function showImgFull(src) {
-  const o = document.createElement("div");
-  o.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px";
-  o.onclick = () => o.remove();
-  const img = document.createElement("img");
-  img.src = src;
-  img.style.cssText = "max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)";
-  o.appendChild(img);
-  document.body.appendChild(o);
-}
-
-async function deleteSub(id) {
-  if (!confirm("Diesen Eintrag wirklich löschen?")) return;
-  const remaining = allSubs.filter(s => s.id !== id);
-  await saveAllToGist(remaining.slice().reverse());
-  allSubs = remaining;
-  render(allSubs);
-}
-
+// ── Render submission list ─────────────────────────────────
 function render(subs) {
-  document.getElementById("meta").textContent =
-    `${subs.length} Einreichung${subs.length!==1?"en":""} · geteilt · Benachrichtigungen an okur@taz.de`;
-  document.getElementById("xlsBtn").disabled = subs.length === 0;
+  const emailCount = getEmails().length;
+  document.getElementById('meta').textContent =
+    `${subs.length} Einreichung${subs.length !== 1 ? 'en' : ''} · ${emailCount} Empfänger`;
+  document.getElementById('xlsBtn').disabled = subs.length === 0;
 
-  const list = document.getElementById("list");
+  const list = document.getElementById('list');
   if (!subs.length) {
     list.innerHTML = '<div class="text-center mt-16 text-slate-400"><p class="text-4xl mb-3">📭</p><p>Noch keine Einreichungen.</p></div>';
     return;
   }
 
   list.innerHTML = subs.map(s => {
-    const tags = (s.pf||[]).map(t=>`<span class="tag">${t}</span>`).join("") ||
+    const tags = (s.pf || []).map(t => `<span class="tag">${esc(t)}</span>`).join('') ||
       '<span class="text-slate-400 text-xs">Kein Problemfeld</span>';
-    const preview = s.ziel ? `<p class="text-sm text-slate-500 mt-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:420px">${s.ziel.slice(0,120)}</p>` : "";
-    const nameStr = s.name ? `<strong class="text-slate-700">${s.name}</strong> · ` : "";
-    const imgCount = (s.ablImg||[]).filter(Boolean).length;
-    const imgBadge = imgCount ? `<span class="text-xs text-slate-400">📎 ${imgCount} Screenshot${imgCount>1?"s":""}</span>` : "";
+    const preview = s.ziel
+      ? `<p class="text-sm text-slate-500 mt-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:420px">${esc(s.ziel.slice(0, 120))}</p>`
+      : '';
+    const attCount = (s.ablImg || []).filter(Boolean).length;
+    const attBadge = attCount ? `<span class="text-xs text-slate-400">📎 ${attCount}</span>` : '';
 
-    const rows = LABELS.map(([label,fn])=>{
-      const val = fn(s); if (!val) return "";
-      return `<div class="dl"><span class="dk">${label}</span><span class="dv">${val}</span></div>`;
-    }).join("");
+    const tableRows = TABLE_FIELDS.map(([label, fn]) => {
+      const v = fn(s);
+      return v ? `<div class="dl"><span class="dk">${label}</span><span class="dv">${esc(v)}</span></div>` : '';
+    }).join('');
 
-    const thumbs = (s.ablImg||[]).map((src,i)=>{
-      if (!src) return "";
-      const meta = (s.ablMeta||[])[i];
-      const isPdf = meta?.type === "pdf" || src.startsWith("data:application/pdf");
+    const thumbs = (s.ablImg || []).map((src, i) => {
+      if (!src) return '';
+      const meta = (s.ablMeta || [])[i];
+      const isPdf = meta?.type === 'pdf' || src.startsWith('data:application/pdf');
+      const name = meta?.name || (isPdf ? 'anhang.pdf' : 'bild.jpg');
       if (isPdf) {
-        return `<div style="display:inline-block;margin:4px;text-align:center;vertical-align:top">
-          <a href="${src}" download="${meta?.name||"anhang.pdf"}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100px;height:80px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;text-decoration:none;color:#1e293b;font-size:11px;font-weight:600;gap:4px">
-            <span style="font-size:24px">📄</span>${escHtml(meta?.name||"PDF")}
+        return `<div class="inline-block m-1 text-center align-top">
+          <a href="${src}" download="${esc(name)}" class="flex flex-col items-center justify-center w-24 h-20 rounded-lg border border-slate-200 bg-slate-50 no-underline text-slate-700 text-xs font-semibold gap-1">
+            <span class="text-2xl">📄</span>${esc(name.length > 12 ? name.slice(0, 12) + '…' : name)}
           </a>
-          <span style="font-size:10px;color:#94a3b8;display:block;margin-top:2px">Schritt ${i+1}</span>
+          <span class="text-xs text-slate-400 block mt-1">Schritt ${i + 1}</span>
         </div>`;
       }
-      return `<div style="display:inline-block;margin:4px;text-align:center;vertical-align:top">
-        <img src="${src}" style="height:80px;max-width:120px;border-radius:8px;border:1px solid #e2e8f0;object-fit:cover;display:block;cursor:pointer"
-          onclick="showImgFull('${src}')" title="Klicken zum Vergrößern">
-        <span style="font-size:10px;color:#94a3b8;display:block;margin-top:2px">Schritt ${i+1}</span>
+      return `<div class="inline-block m-1 text-center align-top">
+        <img src="${src}" class="h-20 max-w-32 rounded-lg border border-slate-200 object-cover block cursor-zoom-in" data-fullsrc="${src}" title="Klicken zum Vergrößern" alt="">
+        <span class="text-xs text-slate-400 block mt-1">Schritt ${i + 1}</span>
       </div>`;
-    }).join("");
+    }).join('');
 
     return `
       <div class="bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden">
@@ -745,44 +457,437 @@ function render(subs) {
           <div class="flex-1 min-w-0">
             <div class="mb-1">${tags}</div>
             ${preview}
-            <p class="text-xs text-slate-400 mt-2">${nameStr}${new Date(s.ts).toLocaleString("de-DE")} ${imgBadge}</p>
+            <p class="text-xs text-slate-400 mt-2">
+              ${s.name ? `<strong class="text-slate-700">${esc(s.name)}</strong> · ` : ''}
+              ${new Date(s.ts).toLocaleString('de-DE')} ${attBadge}
+            </p>
           </div>
           <div class="flex gap-2 flex-shrink-0 items-center">
-            <button onclick="openJiraModal('${s.id}')" class="inline-flex items-center gap-1.5 rounded-lg bg-[#0052CC] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80">🎫 Jira</button>
-            <button onclick="openModal('${s.id}')" class="inline-flex items-center gap-1.5 rounded-lg bg-[#111] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80">📄 Formular</button>
-            <button onclick="toggleDetails('${s.id}')" id="btn-${s.id}" class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 text-slate-700 px-3 py-1.5 text-xs font-bold hover:bg-slate-200">Tabelle ↓</button>
-            <button onclick="deleteSub('${s.id}')" class="text-xs text-red-400 hover:text-red-600 font-semibold px-1">✕</button>
+            <button class="btn-jira inline-flex items-center gap-1.5 rounded-lg bg-[#0052CC] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80" data-id="${s.id}">🎫 Jira</button>
+            <button class="btn-form inline-flex items-center gap-1.5 rounded-lg bg-[#111] text-white px-3 py-1.5 text-xs font-bold hover:opacity-80" data-id="${s.id}">📄 Formular</button>
+            <button class="btn-table inline-flex items-center gap-1.5 rounded-lg bg-slate-100 text-slate-700 px-3 py-1.5 text-xs font-bold hover:bg-slate-200" data-id="${s.id}">Tabelle ↓</button>
+            <button class="btn-delete text-xs text-red-400 hover:text-red-600 font-semibold px-1" data-id="${s.id}">✕</button>
           </div>
         </div>
         <div id="detail-${s.id}" class="hidden border-t border-slate-100 px-5 py-4">
-          ${rows}
-          ${thumbs ? `<div class="mt-3"><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide block mb-2">Screenshots</span>${thumbs}</div>` : ""}
+          ${tableRows}
+          ${thumbs ? `<div class="mt-3"><p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Anhänge</p>${thumbs}</div>` : ''}
         </div>
       </div>`;
-  }).join("");
+  }).join('');
+
+  // Wire up per-card buttons via delegation (avoids onclick= in HTML)
+  list.querySelectorAll('.btn-form').forEach(btn =>
+    btn.addEventListener('click', () => openFormModal(btn.dataset.id)));
+  list.querySelectorAll('.btn-jira').forEach(btn =>
+    btn.addEventListener('click', () => openJiraModal(btn.dataset.id)));
+  list.querySelectorAll('.btn-table').forEach(btn =>
+    btn.addEventListener('click', () => toggleDetail(btn.dataset.id, btn)));
+  list.querySelectorAll('.btn-delete').forEach(btn =>
+    btn.addEventListener('click', () => deleteSub(btn.dataset.id)));
+  list.querySelectorAll('img[data-fullsrc]').forEach(img =>
+    img.addEventListener('click', () => showFullImage(img.dataset.fullsrc)));
 }
 
-function toggleDetails(id) {
+function toggleDetail(id, btn) {
   const el = document.getElementById(`detail-${id}`);
-  const btn = document.getElementById(`btn-${id}`);
-  const hidden = el.classList.toggle("hidden");
-  btn.textContent = hidden ? "Tabelle ↓" : "Tabelle ↑";
+  const hidden = el.classList.toggle('hidden');
+  btn.textContent = hidden ? 'Tabelle ↓' : 'Tabelle ↑';
 }
 
-function exportExcel() {
+// ── Modals ─────────────────────────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// Close buttons with data-close attribute
+document.querySelectorAll('[data-close]').forEach(btn =>
+  btn.addEventListener('click', () => closeModal(btn.dataset.close)));
+
+// Close on backdrop click
+['formModal', 'jiraModal', 'emailModal', 'entryModal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target.id === id) closeModal(id);
+  });
+});
+
+// Close on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['formModal', 'jiraModal', 'emailModal', 'entryModal'].forEach(closeModal);
+  }
+});
+
+function openFormModal(id) {
+  const s = allSubs.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('formModalContent').innerHTML = buildFormView(s);
+  openModal('formModal');
+}
+
+function showFullImage(src) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px';
+  overlay.addEventListener('click', () => overlay.remove());
+  const img = document.createElement('img');
+  img.src = src;
+  img.style.cssText = 'max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.4)';
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
+}
+
+async function deleteSub(id) {
+  if (!confirm('Diesen Eintrag wirklich löschen?')) return;
+  const remaining = allSubs.filter(s => s.id !== id);
+  await saveAllToGist(remaining.slice().reverse());
+  allSubs = remaining;
+  render(allSubs);
+}
+
+// ── Jira modal ─────────────────────────────────────────────
+function openJiraModal(id) {
+  const s = allSubs.find(x => x.id === id);
+  if (!s) return;
+
+  const pf = (s.pf || []).join(', ') || 'Allgemein';
+  document.getElementById('jiraSummary').value =
+    `[HUPsi] ${pf}${s.name ? ' – ' + s.name : ''}`;
+
+  const lines = [];
+  const push = (...args) => lines.push(...args);
+  push(`h2. HUPsi-Einreichung`);
+  push(`*Von:* ${s.name || '–'}  *Datum:* ${new Date(s.ts).toLocaleString('de-DE')}`);
+  push('');
+
+  if ((s.pf || []).length) {
+    push('h3. Problemfeld');
+    (s.pf || []).forEach(p => push(`* ${p}`));
+    if (s.pfS) push(`* ${s.pfS}`);
+    push('');
+  }
+  const addField = (label, val) => { if (val) push(`*${label}:* ${val}`, ''); };
+  addField('Ziel', s.ziel);
+
+  if (s.ktyp || s.beson) {
+    push('h3. Ausgangssituation');
+    addField('Kundentyp', s.ktyp);
+    addField('Besonderheiten', s.beson);
+  }
+
+  const ablSteps = (s.abl || []).filter(Boolean);
+  if (ablSteps.length) {
+    push('h3. Ablauf');
+    ablSteps.forEach((step, i) => {
+      const hasImg = (s.ablImg || [])[i];
+      push(`# ${step}${hasImg ? '  _(Anhang: Bild ' + (i + 1) + ' im Ticket)_' : ''}`);
+    });
+    push('');
+  }
+
+  [['Problem im Ablauf', [['Schritt', s.pSch], ['Was passiert', s.pWas], ['Erwartet', s.pErw], ['Unklar', s.pUnk]]],
+   ['Benötigte Daten',  [['Benötigt', s.dBra], ['Wo erwartet', s.dErw], ['Wo gefunden', s.dFan], ['Prüfung', s.dPru]]]
+  ].forEach(([heading, pairs]) => {
+    if (pairs.some(([, v]) => v)) {
+      push(`h3. ${heading}`);
+      pairs.forEach(([k, v]) => { if (v) push(`*${k}:* ${v}`); });
+      push('');
+    }
+  });
+
+  const hasZusatz = ZUSATZ.some(([k]) => s[k]);
+  if (hasZusatz) {
+    push('h3. Zusatzinfos');
+    ZUSATZ.forEach(([k, l]) => { if (s[k]) push(`*${l}:* ${s[k]}`); });
+    push('');
+  }
+  addField('Workaround', s.work);
+
+  if (s.dauI || s.dauE || s.haeu) {
+    push('h3. Aufwand');
+    addField('Aktuell', s.dauI); addField('Erwartet', s.dauE); addField('Häufigkeit', s.haeu);
+  }
+
+  if ((s.risiken || []).length || s.rskT) {
+    push('h3. Risiken');
+    (s.risiken || []).forEach(r => push(`* ${r}`));
+    if (s.rskT) push(s.rskT);
+    push('');
+  }
+  addField('Soll-Zustand', s.soll);
+
+  if (s.fert) {
+    push('h3. Fertig-Definition (Akzeptanzkriterien)');
+    push(`{panel:borderColor=#e0001b}\n${s.fert}\n{panel}`);
+  }
+
+  push('', `_Erstellt aus HUPsi-Formular – ${new Date(s.ts).toLocaleString('de-DE')}_`);
+  document.getElementById('jiraDesc').value = lines.join('\n');
+
+  // Attachments
+  const atts = (s.ablImg || []).map((src, i) => src ? { src, i, meta: (s.ablMeta || [])[i] } : null).filter(Boolean);
+  const section = document.getElementById('jiraAttachSection');
+  const attList = document.getElementById('jiraAttachList');
+  section.classList.toggle('hidden', !atts.length);
+  attList.innerHTML = atts.map(({ src, i, meta }) => {
+    const isPdf = meta?.type === 'pdf';
+    const name = meta?.name || (isPdf ? `anhang-schritt-${i + 1}.pdf` : `screenshot-schritt-${i + 1}.jpg`);
+    if (isPdf) {
+      return `<a href="${src}" download="${esc(name)}" class="inline-flex items-center gap-2 rounded-xl bg-red-50 border border-red-200 px-4 py-2 text-xs font-semibold text-red-800 no-underline">📄 ${esc(name)}</a>`;
+    }
+    return `<div class="text-center">
+      <img src="${src}" class="h-20 max-w-32 rounded-lg border border-slate-200 object-cover block mb-2" alt="">
+      <a href="${src}" download="${esc(name)}" class="inline-block rounded-lg bg-[#0052CC] text-white px-3 py-1 text-xs font-bold no-underline">⬇ Schritt ${i + 1}</a>
+    </div>`;
+  }).join('');
+
+  resetCopyBtn('copySummaryBtn');
+  resetCopyBtn('copyDescBtn');
+  openModal('jiraModal');
+}
+
+function resetCopyBtn(id) {
+  const btn = document.getElementById(id);
+  btn.textContent = 'Kopieren';
+  btn.style.background = '';
+}
+
+function setupCopyBtn(btnId, sourceId) {
+  document.getElementById(btnId).addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById(sourceId).value);
+    const btn = document.getElementById(btnId);
+    btn.textContent = '✓ Kopiert!';
+    btn.style.background = '#16a34a';
+    setTimeout(() => resetCopyBtn(btnId), 2000);
+  });
+}
+
+setupCopyBtn('copySummaryBtn', 'jiraSummary');
+setupCopyBtn('copyDescBtn', 'jiraDesc');
+
+// ── Email management ───────────────────────────────────────
+function getEmails() {
+  try {
+    return JSON.parse(localStorage.getItem('hupsi-notify-emails')) || [DEFAULT_EMAIL];
+  } catch { return [DEFAULT_EMAIL]; }
+}
+function saveEmails(list) {
+  localStorage.setItem('hupsi-notify-emails', JSON.stringify(list));
+}
+
+function renderEmailList() {
+  const emails = getEmails();
+  document.getElementById('emailList').innerHTML = emails.length
+    ? emails.map((email, i) => `
+        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+          <span class="text-sm">✉️ ${esc(email)}</span>
+          <button class="remove-email-btn text-xs text-red-500 hover:text-red-700 font-bold px-2" data-index="${i}">✕</button>
+        </div>`).join('')
+    : '<p class="text-sm text-slate-400 italic">Keine Empfänger eingetragen.</p>';
+
+  document.querySelectorAll('.remove-email-btn').forEach(btn =>
+    btn.addEventListener('click', () => {
+      const emails = getEmails();
+      emails.splice(Number(btn.dataset.index), 1);
+      saveEmails(emails);
+      renderEmailList();
+      flashEmailSaved();
+    }));
+}
+
+function flashEmailSaved() {
+  const msg = document.getElementById('emailSaveMsg');
+  msg.classList.remove('hidden');
+  setTimeout(() => msg.classList.add('hidden'), 2000);
+}
+
+document.getElementById('emailBtn').addEventListener('click', () => {
+  renderEmailList();
+  document.getElementById('newEmailInput').value = '';
+  document.getElementById('emailAddErr').classList.add('hidden');
+  document.getElementById('emailSaveMsg').classList.add('hidden');
+  openModal('emailModal');
+});
+
+document.getElementById('addEmailBtn').addEventListener('click', () => {
+  const input = document.getElementById('newEmailInput');
+  const err   = document.getElementById('emailAddErr');
+  const val   = input.value.trim().toLowerCase();
+  err.classList.add('hidden');
+  if (!val || !/^[^@]+@[^@]+\.[^@]+$/.test(val)) {
+    err.textContent = 'Bitte eine gültige E-Mail-Adresse eingeben.';
+    err.classList.remove('hidden');
+    return;
+  }
+  const emails = getEmails();
+  if (emails.includes(val)) {
+    err.textContent = 'Diese Adresse ist bereits eingetragen.';
+    err.classList.remove('hidden');
+    return;
+  }
+  emails.push(val);
+  saveEmails(emails);
+  input.value = '';
+  renderEmailList();
+  flashEmailSaved();
+});
+
+document.getElementById('newEmailInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('addEmailBtn').click();
+});
+
+// ── Manual entry modal ─────────────────────────────────────
+function buildEntryForm() {
+  const pfBoxes = PF_OPTIONS.map(o =>
+    `<label class="echk"><input type="checkbox" name="en_pf" value="${esc(o)}"> ${esc(o)}</label>`).join('');
+  const riskBoxes = RISK_OPTIONS.map(o =>
+    `<label class="echk"><input type="checkbox" name="en_risk" value="${esc(o)}"> ${esc(o)}</label>`).join('');
+  const steps = Array.from({ length: STEP_COUNT }, (_, i) => `
+    <div class="flex gap-3 items-start">
+      <span class="mt-3 font-bold text-[#e0001b] min-w-[20px]">${i + 1}.</span>
+      <textarea class="ef" style="min-height:46px" id="en_abl${i + 1}" placeholder="Schritt ${i + 1}"></textarea>
+    </div>`).join('');
+  const zusatzCards = ZUSATZ.map(([id, label]) => `
+    <div class="bg-white border border-slate-200 rounded-xl p-4">
+      <div class="font-bold text-xs mb-2">${label}</div>
+      <textarea class="ef" style="min-height:56px" id="en_${id}"></textarea>
+    </div>`).join('');
+
+  const section = (icon, title, content) =>
+    `<div class="bg-white border border-slate-200 rounded-2xl p-5">
+      <div class="text-base font-black mb-3">${icon} ${title}</div>
+      ${content}
+    </div>`;
+
+  return [
+    section('👤', 'Name', `
+      <input class="ef-sm" type="text" id="en_name" placeholder="Vor- und Nachname">
+      <label class="text-xs font-bold text-slate-500 uppercase tracking-wide block mt-3 mb-1">Datum der Einreichung</label>
+      <input class="ef-sm" type="datetime-local" id="en_date">`),
+    section('🏷', 'Problemfeld', `
+      <div class="grid grid-cols-2 gap-2 mb-3">${pfBoxes}</div>
+      <input class="ef-sm" type="text" id="en_pfS" placeholder="Sonstiges">`),
+    section('🎯', 'Ziel des Vorgangs', `<textarea class="ef" id="en_ziel" placeholder="Was wollte die Person konkret erreichen?"></textarea>`),
+    section('📍', 'Ausgangssituation', `
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Kundentyp</label><textarea class="ef" id="en_ktyp"></textarea></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Besonderheiten</label><textarea class="ef" id="en_beson"></textarea></div>
+      </div>`),
+    section('📋', 'Ablauf', `<div class="flex flex-col gap-2">${steps}</div>`),
+    section('⚠️', 'Problem im Ablauf', `
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Bei welchem Schritt?</label><textarea class="ef" id="en_pSch"></textarea></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Was passiert?</label><textarea class="ef" id="en_pWas"></textarea></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Was erwartet?</label><textarea class="ef" id="en_pErw"></textarea></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Was unklar?</label><textarea class="ef" id="en_pUnk"></textarea></div>
+      </div>`),
+    section('🗄', 'Benötigte Daten', `
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Welche Daten?</label><textarea class="ef" id="en_dBra"></textarea></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Wo erwartet?</label><textarea class="ef" id="en_dErw"></textarea></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Wo gefunden?</label><textarea class="ef" id="en_dFan"></textarea></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Prüfung?</label><textarea class="ef" id="en_dPru"></textarea></div>
+      </div>`),
+    `<div class="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+      <div class="text-base font-black mb-3">🔍 Zusatzfragen</div>
+      <div class="grid grid-cols-2 gap-3">${zusatzCards}</div>
+    </div>`,
+    section('🔄', 'Workaround', `<textarea class="ef" id="en_work"></textarea>`),
+    section('⏱', 'Aufwand und Häufigkeit', `
+      <div class="grid grid-cols-3 gap-3">
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Aktuelle Dauer</label><input class="ef-sm" type="text" id="en_dauI"></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Erwartete Dauer</label><input class="ef-sm" type="text" id="en_dauE"></div>
+        <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Häufigkeit</label><input class="ef-sm" type="text" id="en_haeu"></div>
+      </div>`),
+    section('🛡', 'Risiko', `
+      <div class="grid grid-cols-2 gap-2 mb-3">${riskBoxes}</div>
+      <textarea class="ef" id="en_rskT" placeholder="Was kann schiefgehen?"></textarea>`),
+    section('✨', 'Soll-Zustand', `<textarea class="ef" id="en_soll"></textarea>`),
+    `<div class="bg-red-50 border border-[#e0001b] rounded-2xl p-5">
+      <div class="text-base font-black mb-3">🎯 Fertig-Definition</div>
+      <textarea class="ef" id="en_fert" placeholder="Woran erkennt man, dass der Vorgang korrekt abgeschlossen ist?"></textarea>
+    </div>`,
+  ].join('');
+}
+
+document.getElementById('entryBtn').addEventListener('click', () => {
+  document.getElementById('entryFormContent').innerHTML = buildEntryForm();
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  document.getElementById('en_date').value = now.toISOString().slice(0, 16);
+  document.getElementById('en_saveErr').classList.add('hidden');
+  document.getElementById('en_saveBtn').disabled = false;
+  document.getElementById('en_saveBtn').textContent = 'Einreichung speichern';
+  openModal('entryModal');
+});
+
+document.getElementById('en_saveBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('en_saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gespeichert …';
+
+  const getChecked = name =>
+    [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
+  const v = id => document.getElementById(id)?.value || '';
+  const dateVal = v('en_date');
+
+  const entry = {
+    id:      Date.now().toString() + Math.random().toString(36).slice(2, 6),
+    ts:      dateVal ? new Date(dateVal).getTime() : Date.now(),
+    _manual: true,
+    name:    v('en_name'),
+    pf:      getChecked('en_pf'), pfS: v('en_pfS'),
+    ziel:    v('en_ziel'), ktyp: v('en_ktyp'), beson: v('en_beson'),
+    abl:     Array.from({ length: STEP_COUNT }, (_, i) => v(`en_abl${i + 1}`)),
+    ablImg:  Array(STEP_COUNT).fill(''), ablMeta: Array(STEP_COUNT).fill(null),
+    pSch: v('en_pSch'), pWas: v('en_pWas'), pErw: v('en_pErw'), pUnk: v('en_pUnk'),
+    dBra: v('en_dBra'), dErw: v('en_dErw'), dFan: v('en_dFan'), dPru: v('en_dPru'),
+    ...Object.fromEntries(ZUSATZ.map(([k]) => [k, v(`en_${k}`)])),
+    work: v('en_work'), dauI: v('en_dauI'), dauE: v('en_dauE'), haeu: v('en_haeu'),
+    risiken: getChecked('en_risk'), rskT: v('en_rskT'),
+    soll: v('en_soll'), fert: v('en_fert'),
+  };
+
+  try {
+    const existing = await loadFromGist();
+    existing.push(entry);
+    await saveAllToGist(existing);
+    allSubs = existing.slice().reverse();
+    render(allSubs);
+    closeModal('entryModal');
+  } catch (err) {
+    const errEl = document.getElementById('en_saveErr');
+    errEl.textContent = `Fehler: ${err.message}`;
+    errEl.classList.remove('hidden');
+    btn.disabled = false;
+    btn.textContent = 'Einreichung speichern';
+  }
+});
+
+// ── Excel export ───────────────────────────────────────────
+document.getElementById('xlsBtn').addEventListener('click', () => {
   const rows = allSubs.map(s => {
-    const row = { "Datum": new Date(s.ts).toLocaleString("de-DE") };
-    LABELS.forEach(([label,fn]) => { row[label] = fn(s)||""; });
-    row["Screenshots (Anzahl)"] = (s.ablImg||[]).filter(Boolean).length || "";
+    const row = { Datum: new Date(s.ts).toLocaleString('de-DE') };
+    TABLE_FIELDS.forEach(([label, fn]) => { row[label] = fn(s) || ''; });
+    row['Anhänge (Anzahl)'] = (s.ablImg || []).filter(Boolean).length || '';
     return row;
   });
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws["!cols"] = Object.keys(rows[0]||{}).map(()=>({wch:30}));
+  ws['!cols'] = Object.keys(rows[0] || {}).map(() => ({ wch: 30 }));
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Einreichungen");
-  XLSX.writeFile(wb, `HUPsi-Einreichungen-${new Date().toISOString().slice(0,10)}.xlsx`);
-}
+  XLSX.utils.book_append_sheet(wb, ws, 'Einreichungen');
+  XLSX.writeFile(wb, `HUPsi-Einreichungen-${new Date().toISOString().slice(0, 10)}.xlsx`);
+});
 
+// ── Misc buttons ───────────────────────────────────────────
+document.getElementById('refreshBtn').addEventListener('click', loadSubs);
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+// ── Init ───────────────────────────────────────────────────
 loadSubs();
 </script>
 </body>
