@@ -9,17 +9,18 @@
 *{box-sizing:border-box}
 body{background:#e5e7eb;font-family:system-ui,sans-serif;color:#111}
 .field{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.75rem;background:#fff;min-height:5.5rem;font-family:inherit;font-size:13px;resize:vertical;line-height:1.5;outline:none}
-.field:focus{border-color:#94a3b8;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+.field:focus,.field-sm:focus,.step-in:focus{border-color:#94a3b8;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
 .field-sm{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.6rem .75rem;background:#fff;min-height:2.75rem;font-family:inherit;font-size:13px;outline:none}
-.field-sm:focus{border-color:#94a3b8}
-.step-in{flex:1;border:1px solid #cbd5e1;border-radius:.75rem;padding:.65rem .75rem;background:#fff;min-height:2.9rem;font-family:inherit;font-size:13px;resize:vertical;outline:none;width:100%}
-.chk{display:flex;gap:.5rem;align-items:flex-start;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem;cursor:pointer;font-size:13px;transition:border-color .15s,background .15s}
+.step-in{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.65rem .75rem;background:#fff;min-height:2.9rem;font-family:inherit;font-size:13px;resize:vertical;outline:none}
+.chk{display:flex;gap:.5rem;align-items:flex-start;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem;cursor:pointer;font-size:13px;transition:border-color .15s}
 .chk:hover{border-color:#94a3b8}
 input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
-.img-btn{display:inline-flex;align-items:center;gap:5px;background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:8px;padding:5px 11px;font-size:12px;color:#64748b;cursor:pointer;margin-top:6px;transition:all .15s}
-.img-btn:hover{background:#f1f5f9;border-color:#94a3b8;color:#475569}
+.attach-btn{display:inline-flex;align-items:center;gap:5px;background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:8px;padding:5px 11px;font-size:12px;color:#64748b;cursor:pointer;margin-top:6px;transition:all .15s}
+.attach-btn:hover{background:#f1f5f9;border-color:#94a3b8;color:#475569}
 .img-preview{margin-top:8px;border-radius:10px;max-height:160px;max-width:100%;border:1px solid #e2e8f0;object-fit:contain;display:none}
-.img-rem{display:none;margin-top:4px;background:none;border:none;font-size:11px;color:#ef4444;cursor:pointer;padding:0;font-weight:600}
+.remove-btn{display:none;margin-top:4px;background:none;border:none;font-size:11px;color:#ef4444;cursor:pointer;padding:0;font-weight:600}
+.file-label{display:none;font-size:12px;color:#475569;margin-top:4px}
+.section{border:1px solid #e2e8f0;border-radius:1rem;padding:1.5rem;background:#fff}
 .avoid-break{break-inside:avoid;page-break-inside:avoid}
 @media print{
   .no-print{display:none!important}
@@ -31,61 +32,65 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
 </head>
 <body class="font-sans">
 
-<div class="no-print sticky top-0 z-50 border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
+<nav class="no-print sticky top-0 z-50 border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
   <div class="mx-auto flex max-w-5xl items-center justify-between gap-4">
     <span class="text-sm font-bold text-slate-800">HUPsi-Formular</span>
     <div class="flex gap-2">
       <a href="admin.html" class="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200">📊 Einreichungen</a>
-      <button onclick="window.print()" class="inline-flex items-center gap-2 rounded-xl bg-slate-400 px-4 py-2 text-sm font-bold text-white hover:bg-slate-500">🖨 Drucken</button>
+      <button id="printBtn" class="inline-flex items-center gap-2 rounded-xl bg-slate-400 px-4 py-2 text-sm font-bold text-white hover:bg-slate-500">🖨 Drucken</button>
     </div>
   </div>
-</div>
+</nav>
 
 <main class="page mx-auto my-8 max-w-5xl overflow-hidden rounded-3xl bg-white shadow-xl">
-  <section class="bg-[#111] px-8 py-8 text-white md:px-12">
+  <header class="bg-[#111] px-8 py-8 text-white md:px-12">
     <h1 class="text-3xl font-black leading-tight md:text-4xl">HUPsi-Formular</h1>
-    <p class="mt-2 text-sm text-slate-400">(HUP system improvement)</p>
-    <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-200">Bitte beschreibe einen konkreten Fall aus der Praxis. Ziel ist nicht „allgemeines Feedback", sondern eine möglichst nachvollziehbare Beschreibung, aus der später klare Anforderungen, Testfälle und Akzeptanzkriterien entstehen können.</p>
-  </section>
-  <section class="border-b border-slate-200 bg-amber-50 px-8 py-4 text-sm text-amber-900 md:px-12">
-    <strong>Hinweis:</strong> Bitte pro Formular nur einen konkreten Problemfall erfassen.
-  </section>
+    <p class="mt-1 text-sm text-slate-400">(HUP system improvement)</p>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-200">Bitte beschreibe einen konkreten Fall aus der Praxis — möglichst nachvollziehbar, damit daraus klare Anforderungen, Testfälle und Akzeptanzkriterien entstehen können.</p>
+  </header>
 
-  <section class="space-y-8 px-8 py-8 md:px-12" id="formBody">
+  <div class="border-b border-slate-200 bg-amber-50 px-8 py-4 text-sm text-amber-900 md:px-12">
+    <strong>Hinweis:</strong> Bitte pro Formular nur einen konkreten Problemfall erfassen.
+  </div>
+
+  <div class="space-y-8 px-8 py-8 md:px-12">
 
     <!-- 1. Name -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">👤</span>1. Name</h2>
       <p class="mb-3 text-sm text-slate-600">Wer füllt dieses Formular aus?</p>
       <input class="field-sm" type="text" id="name" placeholder="Vor- und Nachname"/>
     </div>
 
     <!-- 2. Problemfeld -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🏷</span>2. Problemfeld</h2>
       <p class="mb-4 text-sm text-slate-600">Bitte alles ankreuzen, was zu diesem Fall passt.</p>
       <div class="grid gap-3 md:grid-cols-2">
-        <label class="chk"><input type="checkbox" name="pf[]" value="Buchhaltung / OP/AP / Rechnungen"> Buchhaltung / OP/AP / Rechnungen</label>
-        <label class="chk"><input type="checkbox" name="pf[]" value="Storno / Rechnungskorrektur"> Storno / Rechnungskorrektur</label>
-        <label class="chk"><input type="checkbox" name="pf[]" value="Adressänderung"> Adressänderung</label>
-        <label class="chk"><input type="checkbox" name="pf[]" value="Mahnwesen / Zahlung / Rücklastschrift"> Mahnwesen / Zahlung / Rücklastschrift</label>
-        <label class="chk"><input type="checkbox" name="pf[]" value="Fehlermeldung"> Fehlermeldung</label>
-        <label class="chk"><input type="checkbox" name="pf[]" value="Wiedervorlage / Organisation"> Wiedervorlage / Organisation</label>
-        <label class="chk"><input type="checkbox" name="pf[]" value="Oberfläche / Übersicht"> Oberfläche / Übersicht</label>
-        <label class="chk"><input type="checkbox" name="pf[]" value="Trägerdienste / Kommunikation"> Trägerdienste / Kommunikation</label>
+        <label class="chk"><input type="checkbox" name="pf" value="Buchhaltung / OP/AP / Rechnungen"> Buchhaltung / OP/AP / Rechnungen</label>
+        <label class="chk"><input type="checkbox" name="pf" value="Storno / Rechnungskorrektur"> Storno / Rechnungskorrektur</label>
+        <label class="chk"><input type="checkbox" name="pf" value="Adressänderung"> Adressänderung</label>
+        <label class="chk"><input type="checkbox" name="pf" value="Mahnwesen / Zahlung / Rücklastschrift"> Mahnwesen / Zahlung / Rücklastschrift</label>
+        <label class="chk"><input type="checkbox" name="pf" value="Fehlermeldung"> Fehlermeldung</label>
+        <label class="chk"><input type="checkbox" name="pf" value="Wiedervorlage / Organisation"> Wiedervorlage / Organisation</label>
+        <label class="chk"><input type="checkbox" name="pf" value="Oberfläche / Übersicht"> Oberfläche / Übersicht</label>
+        <label class="chk"><input type="checkbox" name="pf" value="Trägerdienste / Kommunikation"> Trägerdienste / Kommunikation</label>
       </div>
-      <div class="mt-4"><label class="text-sm font-semibold text-slate-700">Sonstiges</label><input class="field-sm mt-2" type="text" id="pfS"/></div>
+      <div class="mt-4">
+        <label class="text-sm font-semibold text-slate-700">Sonstiges</label>
+        <input class="field-sm mt-2" type="text" id="pfS"/>
+      </div>
     </div>
 
     <!-- 3. Ziel -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🎯</span>3. Ziel des Vorgangs</h2>
       <p class="mb-3 text-sm text-slate-600">Was wolltest du konkret erreichen?</p>
       <textarea class="field" id="ziel" placeholder="Beispiel: Rechnungsadresse korrigieren, Zahlung prüfen, Abo rückwirkend ändern ..."></textarea>
     </div>
 
     <!-- 4. Ausgangssituation -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">📍</span>4. Ausgangssituation</h2>
       <div class="grid gap-5 md:grid-cols-2">
         <div><label class="text-sm font-semibold text-slate-700">Kundentyp / Fall</label><textarea class="field mt-2" id="ktyp" placeholder="z. B. Abo, Firma, Sonderfall ..."></textarea></div>
@@ -94,30 +99,17 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
     </div>
 
     <!-- 5. Ablauf -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">📋</span>5. Ablauf Schritt für Schritt</h2>
-      <p class="mb-3 text-sm text-slate-600">Bitte möglichst konkret: Maske, Klick, Eingabe, Ergebnis. Screenshots und PDFs können direkt angehängt werden.</p>
-      <div class="space-y-4">
-        <!-- Schritt 1 -->
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">1.</span><div style="flex:1"><textarea class="step-in" id="abl1" placeholder="Schritt 1"></textarea><label class="img-btn">📎 Anhang<input type="file" accept="image/*,application/pdf" onchange="handleImg(event,1)" id="imgInput1" style="display:none"></label><button class="img-rem" id="imgRemBtn1" onclick="removeImg(1)">✕ Entfernen</button><div id="imgLabel1" style="display:none;font-size:12px;color:#475569;margin-top:4px"></div><img class="img-preview" id="imgPrev1"></div></div>
-        <!-- Schritt 2 -->
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">2.</span><div style="flex:1"><textarea class="step-in" id="abl2" placeholder="Schritt 2"></textarea><label class="img-btn">📎 Anhang<input type="file" accept="image/*,application/pdf" onchange="handleImg(event,2)" id="imgInput2" style="display:none"></label><button class="img-rem" id="imgRemBtn2" onclick="removeImg(2)">✕ Entfernen</button><div id="imgLabel2" style="display:none;font-size:12px;color:#475569;margin-top:4px"></div><img class="img-preview" id="imgPrev2"></div></div>
-        <!-- Schritt 3 -->
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">3.</span><div style="flex:1"><textarea class="step-in" id="abl3" placeholder="Schritt 3"></textarea><label class="img-btn">📎 Anhang<input type="file" accept="image/*,application/pdf" onchange="handleImg(event,3)" id="imgInput3" style="display:none"></label><button class="img-rem" id="imgRemBtn3" onclick="removeImg(3)">✕ Entfernen</button><div id="imgLabel3" style="display:none;font-size:12px;color:#475569;margin-top:4px"></div><img class="img-preview" id="imgPrev3"></div></div>
-        <!-- Schritt 4 -->
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">4.</span><div style="flex:1"><textarea class="step-in" id="abl4" placeholder="Schritt 4"></textarea><label class="img-btn">📎 Anhang<input type="file" accept="image/*,application/pdf" onchange="handleImg(event,4)" id="imgInput4" style="display:none"></label><button class="img-rem" id="imgRemBtn4" onclick="removeImg(4)">✕ Entfernen</button><div id="imgLabel4" style="display:none;font-size:12px;color:#475569;margin-top:4px"></div><img class="img-preview" id="imgPrev4"></div></div>
-        <!-- Schritt 5 -->
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">5.</span><div style="flex:1"><textarea class="step-in" id="abl5" placeholder="Schritt 5"></textarea><label class="img-btn">📎 Anhang<input type="file" accept="image/*,application/pdf" onchange="handleImg(event,5)" id="imgInput5" style="display:none"></label><button class="img-rem" id="imgRemBtn5" onclick="removeImg(5)">✕ Entfernen</button><div id="imgLabel5" style="display:none;font-size:12px;color:#475569;margin-top:4px"></div><img class="img-preview" id="imgPrev5"></div></div>
-        <!-- Schritt 6 -->
-        <div class="flex items-start gap-3"><span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">6.</span><div style="flex:1"><textarea class="step-in" id="abl6" placeholder="Schritt 6"></textarea><label class="img-btn">📎 Anhang<input type="file" accept="image/*,application/pdf" onchange="handleImg(event,6)" id="imgInput6" style="display:none"></label><button class="img-rem" id="imgRemBtn6" onclick="removeImg(6)">✕ Entfernen</button><div id="imgLabel6" style="display:none;font-size:12px;color:#475569;margin-top:4px"></div><img class="img-preview" id="imgPrev6"></div></div>
-      </div>
+      <p class="mb-3 text-sm text-slate-600">Bitte möglichst konkret: Maske, Klick, Eingabe, Ergebnis. Screenshots und PDFs können angehängt werden.</p>
+      <div class="space-y-4" id="steps"></div>
     </div>
 
     <!-- 6. Problem -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">⚠️</span>6. Problem im Ablauf</h2>
       <div class="grid gap-5 md:grid-cols-2">
-        <div><label class="text-sm font-semibold text-slate-700">Bei welchem Schritt trat das Problem auf?</label><textarea class="field mt-2" id="pSch" placeholder="Schrittnummer(n) und kurze Beschreibung"></textarea></div>
+        <div><label class="text-sm font-semibold text-slate-700">Bei welchem Schritt?</label><textarea class="field mt-2" id="pSch" placeholder="Schrittnummer(n) und kurze Beschreibung"></textarea></div>
         <div><label class="text-sm font-semibold text-slate-700">Was genau ist passiert?</label><textarea class="field mt-2" id="pWas" placeholder="Bitte konkret, nicht nur 'ging nicht'."></textarea></div>
         <div><label class="text-sm font-semibold text-slate-700">Was hattest du erwartet?</label><textarea class="field mt-2" id="pErw"></textarea></div>
         <div><label class="text-sm font-semibold text-slate-700">Was war unklar?</label><textarea class="field mt-2" id="pUnk"></textarea></div>
@@ -125,9 +117,9 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
     </div>
 
     <!-- 7. Daten -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🗄</span>7. Benötigte Daten / Informationen</h2>
-      <p class="mb-4 text-sm text-slate-600">Welche Informationen musst du sehen, um den Fall sicher bearbeiten und am Ende prüfen zu können?</p>
+      <p class="mb-4 text-sm text-slate-600">Welche Informationen brauchst du, um den Fall sicher bearbeiten und prüfen zu können?</p>
       <div class="grid gap-5 md:grid-cols-2">
         <div><label class="text-sm font-semibold text-slate-700">Welche Daten brauchst du?</label><textarea class="field mt-2" id="dBra" placeholder="z. B. offene Posten, Zahleradresse ..."></textarea></div>
         <div><label class="text-sm font-semibold text-slate-700">Wo erwartest du sie im System?</label><textarea class="field mt-2" id="dErw" placeholder="Maske, Reiter, Feldname ..."></textarea></div>
@@ -139,28 +131,28 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
     <!-- 8. Zusatzfragen -->
     <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🔍</span>8. Zusatzfragen je Problemfeld</h2>
-      <p class="mb-5 text-sm text-slate-600">Bitte nur die Blöcke ausfüllen, die zu deinem Fall passen.</p>
+      <p class="mb-5 text-sm text-slate-600">Nur ausfüllen, was zum Fall passt.</p>
       <div class="grid gap-5 md:grid-cols-2">
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Buchhaltung / Rechnungen</h3><textarea class="field" id="zBuch" placeholder="Welche Information hast du gesucht? Wo hast du sie erwartet? Wie lange hast du gebraucht?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Buchhaltung / Rechnungen</h3><textarea class="field" id="zBuch" placeholder="Welche Information hast du gesucht? Wo erwartet? Wie lange gebraucht?"></textarea></div>
         <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Storno / Rechnungskorrektur</h3><textarea class="field" id="zSto" placeholder="Welche Änderung wolltest du machen? Warum ging es nicht direkt?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Adressänderung</h3><textarea class="field" id="zAdr" placeholder="Welche Felder hast du geändert? Welche Meldung kam?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Adressänderung</h3><textarea class="field" id="zAdr" placeholder="Welche Felder geändert? Welche Meldung kam?"></textarea></div>
         <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Mahnwesen / Zahlung</h3><textarea class="field" id="zMah" placeholder="Was wolltest du buchen oder prüfen?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Fehlermeldung</h3><textarea class="field" id="zFeh" placeholder="Wortlaut der Fehlermeldung. In welchem Schritt trat sie auf?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Fehlermeldung</h3><textarea class="field" id="zFeh" placeholder="Wortlaut der Fehlermeldung. In welchem Schritt?"></textarea></div>
         <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Wiedervorlage / Organisation</h3><textarea class="field" id="zWie" placeholder="Was musst du später nochmal bearbeiten?"></textarea></div>
-        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Oberfläche / Übersicht</h3><textarea class="field" id="zObe" placeholder="Welche Information hast du gesucht? Was hat gefehlt?"></textarea></div>
+        <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Oberfläche / Übersicht</h3><textarea class="field" id="zObe" placeholder="Welche Information gesucht? Wo zuerst geschaut?"></textarea></div>
         <div class="avoid-break rounded-2xl border border-slate-200 bg-white p-5"><h3 class="mb-3 font-bold text-sm">Trägerdienste / Kommunikation</h3><textarea class="field" id="zTra" placeholder="Welche Information wurde übermittelt? Was war falsch?"></textarea></div>
       </div>
     </div>
 
     <!-- 9. Workaround -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🔄</span>9. Workaround</h2>
       <p class="mb-3 text-sm text-slate-600">Was hast du stattdessen gemacht? Zettel, Word, Excel, Kolleg:in gefragt, altes System genutzt.</p>
       <textarea class="field" id="work"></textarea>
     </div>
 
     <!-- 10. Aufwand -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">⏱</span>10. Aufwand und Häufigkeit</h2>
       <div class="grid gap-5 md:grid-cols-3">
         <div><label class="text-sm font-semibold text-slate-700">Aktuelle Dauer</label><input class="field-sm mt-2" type="text" id="dauI" placeholder="z. B. 15 Minuten"/></div>
@@ -170,21 +162,21 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
     </div>
 
     <!-- 11. Risiko -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">🛡</span>11. Risiko / Fehlerfolgen</h2>
       <div class="grid gap-3 md:grid-cols-2">
-        <label class="chk"><input type="checkbox" name="risiko[]" value="falsche Rechnung"> falsche Rechnung</label>
-        <label class="chk"><input type="checkbox" name="risiko[]" value="Kunde falsch informiert"> Kunde falsch informiert</label>
-        <label class="chk"><input type="checkbox" name="risiko[]" value="Zahlung falsch gebucht"> Zahlung falsch gebucht</label>
-        <label class="chk"><input type="checkbox" name="risiko[]" value="Vorgang bleibt liegen"> Vorgang bleibt liegen</label>
-        <label class="chk"><input type="checkbox" name="risiko[]" value="zusätzlicher manueller Aufwand"> zusätzlicher manueller Aufwand</label>
-        <label class="chk"><input type="checkbox" name="risiko[]" value="anderes Risiko"> anderes Risiko</label>
+        <label class="chk"><input type="checkbox" name="risiko" value="falsche Rechnung"> falsche Rechnung</label>
+        <label class="chk"><input type="checkbox" name="risiko" value="Kunde falsch informiert"> Kunde falsch informiert</label>
+        <label class="chk"><input type="checkbox" name="risiko" value="Zahlung falsch gebucht"> Zahlung falsch gebucht</label>
+        <label class="chk"><input type="checkbox" name="risiko" value="Vorgang bleibt liegen"> Vorgang bleibt liegen</label>
+        <label class="chk"><input type="checkbox" name="risiko" value="zusätzlicher manueller Aufwand"> zusätzlicher manueller Aufwand</label>
+        <label class="chk"><input type="checkbox" name="risiko" value="anderes Risiko"> anderes Risiko</label>
       </div>
-      <textarea class="field mt-4" id="rskT" placeholder="Bitte kurz beschreiben, was konkret schiefgehen kann oder bereits schiefgegangen ist."></textarea>
+      <textarea class="field mt-4" id="rskT" placeholder="Bitte kurz beschreiben, was schiefgehen kann oder bereits schiefgegangen ist."></textarea>
     </div>
 
     <!-- 12. Soll-Zustand -->
-    <div class="avoid-break rounded-2xl border border-slate-200 p-6">
+    <div class="section avoid-break">
       <h2 class="mb-4 flex items-center gap-2 text-xl font-bold"><span class="text-[#e0001b]">✨</span>12. Soll-Zustand</h2>
       <p class="mb-3 text-sm text-slate-600">Wie müsste der Ablauf idealerweise funktionieren?</p>
       <textarea class="field" id="soll"></textarea>
@@ -197,258 +189,294 @@ input[type=checkbox]{accent-color:#e0001b;margin-top:1px;flex-shrink:0}
       <textarea class="field" id="fert" placeholder="Beispiel: Die Rechnung zeigt die neue Adresse, OP/AP ist korrekt, keine manuelle Nacharbeit nötig."></textarea>
     </div>
 
-    <!-- Config error (shown if deploy.py was never run) -->
-    <div id="configError" style="display:none" class="rounded-2xl border border-red-300 bg-red-50 p-6">
+    <!-- Errors / Submit / Success -->
+    <div id="configError" class="hidden rounded-2xl border border-red-300 bg-red-50 p-6">
       <p class="font-bold text-red-800 mb-2">⚠️ Formular nicht konfiguriert</p>
-      <p class="text-sm text-red-700 leading-relaxed">Das Formular kann keine Daten speichern, weil <code>deploy.py</code> noch nicht ausgeführt wurde. Bitte das ZIP erneut herunterladen und <code>python3 deploy.py</code> im Terminal ausführen.</p>
+      <p class="text-sm text-red-700">Bitte <code>🚀 Deploy.command</code> ausführen, um das Formular einzurichten.</p>
     </div>
 
-    <!-- Submit -->
+    <div id="saveError" class="hidden rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3"></div>
+
     <div class="no-print flex items-center justify-between" id="submitArea">
       <span class="text-xs text-slate-400">✉️ Benachrichtigung an okur@taz.de</span>
-      <button onclick="submitForm()" id="submitBtn"
-        class="inline-flex items-center gap-2 rounded-xl bg-green-600 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-green-700">
+      <button id="submitBtn" class="inline-flex items-center gap-2 rounded-xl bg-green-600 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-green-700">
         Formular einreichen →
       </button>
     </div>
 
-    <div id="saveError" style="display:none" class="rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 mt-2"></div>
-
     <div id="successMsg" class="hidden rounded-2xl border border-green-300 bg-green-50 p-8 text-center">
       <p class="text-xl font-black text-green-800">✓ Formular eingereicht!</p>
       <p class="mt-2 text-sm text-green-700">Deine Angaben wurden gespeichert und sind für alle sichtbar.</p>
-      <p class="mt-1 text-xs text-green-600">Eine Benachrichtigung wurde an okur@taz.de gesendet.</p>
-      <button onclick="resetForm()" class="mt-5 inline-block rounded-xl bg-green-600 px-5 py-2 text-sm font-bold text-white hover:bg-green-700">+ Neues Formular</button>
+      <p class="mt-1 text-xs text-green-600">Eine Benachrichtigung wurde gesendet.</p>
+      <button id="newFormBtn" class="mt-5 inline-block rounded-xl bg-green-600 px-5 py-2 text-sm font-bold text-white hover:bg-green-700">+ Neues Formular</button>
       <a href="admin.html" class="ml-3 mt-5 inline-block rounded-xl bg-slate-100 px-5 py-2 text-sm font-bold text-slate-700">Alle Einreichungen</a>
     </div>
 
     <footer class="border-t border-slate-200 pt-6 text-xs text-slate-400">
       Dieses Formular dient der strukturierten Erhebung konkreter Problemfälle.
     </footer>
-  </section>
+  </div>
 </main>
 
 <script>
+'use strict';
 
+// ── Constants ──────────────────────────────────────────────
+const STEP_COUNT = 6;
+const GIST_TOKEN = [103, 104, 112, 95, 121, 73, 87, 80, 85, 111, 104, 50, 111, 67, 70, 87, 53, 89, 74, 89, 106, 52, 66, 102, 89, 122, 122, 49, 65, 75, 121, 81, 110, 108, 52, 100, 121, 70, 85, 66].map(c=>String.fromCharCode(c)).join("");
+const GIST_ID    = "792ef30f2c9f14b442627bf7b7cdfad5";
+const GIST_HEADERS = {
+  'Authorization': `token ${GIST_TOKEN}`,
+  'Accept': 'application/vnd.github.v3+json',
+  'Content-Type': 'application/json',
+};
 
+// ── Attachment state ───────────────────────────────────────
+const attachments = Object.fromEntries(
+  Array.from({length: STEP_COUNT}, (_, i) => [i + 1, { data: '', meta: null }])
+);
 
+// ── Build step rows ────────────────────────────────────────
+function buildSteps() {
+  const container = document.getElementById('steps');
+  const fragment = document.createDocumentFragment();
 
-// ── Image helpers ──────────────────────────────────────────
-const imgData = {1:"",2:"",3:"",4:"",5:"",6:""};
-const imgMeta = {1:null,2:null,3:null,4:null,5:null,6:null};
-const imgMeta = {};
+  for (let i = 1; i <= STEP_COUNT; i++) {
+    const row = document.createElement('div');
+    row.className = 'flex items-start gap-3';
+    row.innerHTML = `
+      <span class="mt-3 w-6 font-bold text-[#e0001b] flex-shrink-0">${i}.</span>
+      <div style="flex:1">
+        <textarea class="step-in" id="abl${i}" placeholder="Schritt ${i}"></textarea>
+        <label class="attach-btn">📎 Anhang
+          <input type="file" accept="image/*,application/pdf" id="imgInput${i}" style="display:none">
+        </label>
+        <button class="remove-btn" id="imgRemBtn${i}">✕ Entfernen</button>
+        <div class="file-label" id="imgLabel${i}"></div>
+        <img class="img-preview" id="imgPrev${i}" alt="">
+      </div>`;
 
-function compressImg(file, cb) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      const MAX = 1400;
-      let w = img.width, h = img.height;
-      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-      const c = document.createElement("canvas");
-      c.width = w; c.height = h;
-      c.getContext("2d").drawImage(img, 0, 0, w, h);
-      cb(c.toDataURL("image/jpeg", 0.82), "image");
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+    // Attach listeners after DOM insertion
+    const fileInput = row.querySelector(`#imgInput${i}`);
+    const removeBtn = row.querySelector(`#imgRemBtn${i}`);
+    fileInput.addEventListener('change', e => handleAttachment(e, i));
+    removeBtn.addEventListener('click', () => clearAttachment(i));
+
+    fragment.appendChild(row);
+  }
+  container.appendChild(fragment);
 }
 
-function handleImg(e, n) {
-  const file = e.target.files[0];
-  if (!file) return;
-  if (file.type === "application/pdf") {
+// ── Attachment handling ────────────────────────────────────
+function compressImage(file) {
+  return new Promise(resolve => {
     const reader = new FileReader();
-    reader.onload = ev => {
-      const src = ev.target.result;
-      imgData[n] = src;
-      imgMeta[n] = { type: "pdf", name: file.name };
-      const prev = document.getElementById("imgPrev"+n);
-      prev.style.display = "none"; // hide img tag for PDFs
-      const lbl = document.getElementById("imgLabel"+n);
-      lbl.textContent = "📄 " + file.name;
-      lbl.style.display = "inline-block";
-      document.getElementById("imgRemBtn"+n).style.display = "inline-block";
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1400;
+        let [w, h] = [img.width, img.height];
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
-  } else {
-    compressImg(file, (src) => {
-      imgData[n] = src;
-      imgMeta[n] = { type: "image", name: file.name };
-      const prev = document.getElementById("imgPrev"+n);
-      prev.src = src; prev.style.display = "block";
-      document.getElementById("imgLabel"+n).style.display = "none";
-      document.getElementById("imgRemBtn"+n).style.display = "inline-block";
-    });
-  }
+  });
 }
 
-function removeImg(n) {
-  imgData[n] = "";
-  imgMeta[n] = null;
-  document.getElementById("imgPrev"+n).style.display = "none";
-  document.getElementById("imgRemBtn"+n).style.display = "none";
-  document.getElementById("imgLabel"+n).style.display = "none";
-  document.getElementById("imgInput"+n).value = "";
+async function handleAttachment(e, n) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const preview = document.getElementById(`imgPrev${n}`);
+  const label   = document.getElementById(`imgLabel${n}`);
+  const remBtn  = document.getElementById(`imgRemBtn${n}`);
+
+  if (file.type === 'application/pdf') {
+    const data = await new Promise(resolve => {
+      const r = new FileReader();
+      r.onload = ev => resolve(ev.target.result);
+      r.readAsDataURL(file);
+    });
+    attachments[n] = { data, meta: { type: 'pdf', name: file.name } };
+    preview.style.display = 'none';
+    label.textContent = `📄 ${file.name}`;
+    label.style.display = 'block';
+  } else {
+    const data = await compressImage(file);
+    attachments[n] = { data, meta: { type: 'image', name: file.name } };
+    preview.src = data;
+    preview.style.display = 'block';
+    label.style.display = 'none';
+  }
+  remBtn.style.display = 'inline-block';
+}
+
+function clearAttachment(n) {
+  attachments[n] = { data: '', meta: null };
+  document.getElementById(`imgPrev${n}`).style.display = 'none';
+  document.getElementById(`imgLabel${n}`).style.display = 'none';
+  document.getElementById(`imgRemBtn${n}`).style.display = 'none';
+  document.getElementById(`imgInput${n}`).value = '';
 }
 
 // ── Data collection ────────────────────────────────────────
+function getChecked(name) {
+  return [...document.querySelectorAll(`input[name="${name}"]:checked`)]
+    .map(el => el.value);
+}
+
+function val(id) {
+  return document.getElementById(id).value;
+}
+
 function collectData() {
-  const checked = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el => el.value);
   return {
-    ts: Date.now(), id: Date.now().toString(),
-    name: document.getElementById("name").value,
-    pf:   checked("pf[]"), pfS: document.getElementById("pfS").value,
-    ziel: document.getElementById("ziel").value,
-    ktyp: document.getElementById("ktyp").value,
-    beson:document.getElementById("beson").value,
-    abl:  [1,2,3,4,5,6].map(i => document.getElementById("abl"+i).value),
-    ablImg:[1,2,3,4,5,6].map(i => imgData[i]||""),
-    ablMeta:[1,2,3,4,5,6].map(i => imgMeta[i]||null),
-    pSch: document.getElementById("pSch").value,
-    pWas: document.getElementById("pWas").value,
-    pErw: document.getElementById("pErw").value,
-    pUnk: document.getElementById("pUnk").value,
-    dBra: document.getElementById("dBra").value,
-    dErw: document.getElementById("dErw").value,
-    dFan: document.getElementById("dFan").value,
-    dPru: document.getElementById("dPru").value,
-    zBuch:document.getElementById("zBuch").value,
-    zSto: document.getElementById("zSto").value,
-    zAdr: document.getElementById("zAdr").value,
-    zMah: document.getElementById("zMah").value,
-    zFeh: document.getElementById("zFeh").value,
-    zWie: document.getElementById("zWie").value,
-    zObe: document.getElementById("zObe").value,
-    zTra: document.getElementById("zTra").value,
-    work: document.getElementById("work").value,
-    dauI: document.getElementById("dauI").value,
-    dauE: document.getElementById("dauE").value,
-    haeu: document.getElementById("haeu").value,
-    risiken: checked("risiko[]"),
-    rskT: document.getElementById("rskT").value,
-    soll: document.getElementById("soll").value,
-    fert: document.getElementById("fert").value,
+    id:      Date.now().toString(),
+    ts:      Date.now(),
+    name:    val('name'),
+    pf:      getChecked('pf'),
+    pfS:     val('pfS'),
+    ziel:    val('ziel'),
+    ktyp:    val('ktyp'),
+    beson:   val('beson'),
+    abl:     Array.from({length: STEP_COUNT}, (_, i) => val(`abl${i + 1}`)),
+    ablImg:  Array.from({length: STEP_COUNT}, (_, i) => attachments[i + 1].data),
+    ablMeta: Array.from({length: STEP_COUNT}, (_, i) => attachments[i + 1].meta),
+    pSch: val('pSch'), pWas: val('pWas'), pErw: val('pErw'), pUnk: val('pUnk'),
+    dBra: val('dBra'), dErw: val('dErw'), dFan: val('dFan'), dPru: val('dPru'),
+    zBuch: val('zBuch'), zSto: val('zSto'), zAdr: val('zAdr'), zMah: val('zMah'),
+    zFeh:  val('zFeh'), zWie: val('zWie'), zObe: val('zObe'), zTra: val('zTra'),
+    work: val('work'),
+    dauI: val('dauI'), dauE: val('dauE'), haeu: val('haeu'),
+    risiken: getChecked('risiko'),
+    rskT: val('rskT'),
+    soll: val('soll'),
+    fert: val('fert'),
   };
 }
 
-// ── Storage ────────────────────────────────────────────────
-const GIST_TOKEN = [103, 104, 112, 95, 121, 73, 87, 80, 85, 111, 104, 50, 111, 67, 70, 87, 53, 89, 74, 89, 106, 52, 66, 102, 89, 122, 122, 49, 65, 75, 121, 81, 110, 108, 52, 100, 121, 70, 85, 66].map(c=>String.fromCharCode(c)).join("");
-const GIST_ID    = "d130a2039badc4d52032a7b1569ccf08";
-const GIST_URL   = `https://api.github.com/gists/${GIST_ID}`;
-
+// ── Gist storage ───────────────────────────────────────────
 function credentialsOk() {
-  return !GIST_TOKEN.includes("__") && !GIST_ID.includes("__");
+  return !GIST_TOKEN.startsWith('__') && !GIST_ID.startsWith('__');
 }
 
+const GIST_URL = `https://api.github.com/gists/${GIST_ID}`;
+
 async function loadFromGist() {
-  const res = await fetch(GIST_URL, {
-    headers: { "Authorization": `token ${GIST_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
-  });
-  if (!res.ok) throw new Error("Gist-Verbindung fehlgeschlagen (" + res.status + ")");
-  const data = await res.json();
-  return JSON.parse(data.files["submissions.json"].content).submissions || [];
+  const res = await fetch(GIST_URL, { headers: GIST_HEADERS });
+  if (!res.ok) throw new Error(`Gist-Fehler ${res.status}`);
+  const json = await res.json();
+  return JSON.parse(json.files['submissions.json'].content).submissions || [];
 }
 
 async function saveToGist(entry) {
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const existing = await loadFromGist();
-      existing.push(entry);
+      const list = await loadFromGist();
+      list.push(entry);
       const res = await fetch(GIST_URL, {
-        method: "PATCH",
-        headers: {
-          "Authorization": `token ${GIST_TOKEN}`,
-          "Content-Type": "application/json",
-          "Accept": "application/vnd.github.v3+json"
-        },
-        body: JSON.stringify({ files: { "submissions.json": { content: JSON.stringify({ submissions: existing }) } } })
+        method: 'PATCH',
+        headers: GIST_HEADERS,
+        body: JSON.stringify({ files: { 'submissions.json': { content: JSON.stringify({ submissions: list }) } } }),
       });
-      if (!res.ok) throw new Error("Speichern fehlgeschlagen (" + res.status + ")");
+      if (!res.ok) throw new Error(`Speichern fehlgeschlagen ${res.status}`);
       return;
-    } catch(e) {
-      if (attempt === 3) throw e;
+    } catch (err) {
+      if (attempt === 3) throw err;
       await new Promise(r => setTimeout(r, 800 * attempt));
     }
   }
 }
 
+// ── Email notification ─────────────────────────────────────
 function getNotifyEmails() {
   try {
-    return JSON.parse(localStorage.getItem("hupsi-notify-emails") || "null") || ["okur@taz.de"];
-  } catch { return ["okur@taz.de"]; }
+    return JSON.parse(localStorage.getItem('hupsi-notify-emails')) || ['okur@taz.de'];
+  } catch {
+    return ['okur@taz.de'];
+  }
 }
 
-async function sendEmail(data) {
-  const emails = getNotifyEmails();
-  const subject = `🔔 HUPsi-Einreichung von ${data.name||"(kein Name)"} – ${new Date(data.ts).toLocaleDateString("de-DE")}`;
-  const body = {
-    _subject: subject,
-    _template: "table",
-    Name: data.name||"–",
-    Problemfeld: (data.pf||[]).join(", ")||"–",
-    Ziel: data.ziel||"–",
-    Ablauf: (data.abl||[]).filter(Boolean).map((s,i)=>`${i+1}. ${s}`).join(" | ")||"–",
-    Problem: data.pWas||"–",
-    Risiken: (data.risiken||[]).join(", ")||"–",
-    Workaround: data.work||"–",
-    Fertig_Definition: data.fert||"–",
-    _replyto: "noreply@taz.de",
-  };
-  // Send to each address
-  for (const email of emails) {
-    try {
-      await fetch(`https://formsubmit.co/ajax/${email}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({...body, _cc: emails.filter(e=>e!==email).join(",")})
-      });
-      break; // FormSubmit handles CC, so one call is enough
-    } catch(e) {}
-  }
+async function sendNotification(data) {
+  const [primary, ...rest] = getNotifyEmails();
+  if (!primary) return;
+  try {
+    await fetch(`https://formsubmit.co/ajax/${primary}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: `🔔 HUPsi-Einreichung von ${data.name || '(kein Name)'} – ${new Date(data.ts).toLocaleDateString('de-DE')}`,
+        _template: 'table',
+        _cc: rest.join(','),
+        Name:        data.name || '–',
+        Problemfeld: data.pf.join(', ') || '–',
+        Ziel:        data.ziel || '–',
+        Ablauf:      data.abl.filter(Boolean).map((s, i) => `${i + 1}. ${s}`).join(' | ') || '–',
+        Problem:     data.pWas || '–',
+        Risiken:     data.risiken.join(', ') || '–',
+        Workaround:  data.work || '–',
+        Fertig:      data.fert || '–',
+        _replyto:    'noreply@taz.de',
+      }),
+    });
+  } catch { /* notification failure is non-critical */ }
 }
 
 // ── Form reset ─────────────────────────────────────────────
 function resetForm() {
-  document.querySelectorAll("textarea, input[type=text]").forEach(el => el.value = "");
-  document.querySelectorAll("input[type=checkbox]").forEach(el => el.checked = false);
-  for (let i = 1; i <= 6; i++) removeImg(i);
-  document.getElementById("successMsg").classList.add("hidden");
-  document.getElementById("submitArea").style.display = "";
-  const btn = document.getElementById("submitBtn");
+  document.querySelectorAll('textarea, input[type=text]').forEach(el => el.value = '');
+  document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+  for (let i = 1; i <= STEP_COUNT; i++) clearAttachment(i);
+  document.getElementById('successMsg').classList.add('hidden');
+  document.getElementById('saveError').classList.add('hidden');
+  document.getElementById('submitArea').style.display = '';
+  const btn = document.getElementById('submitBtn');
   btn.disabled = false;
-  btn.textContent = "Formular einreichen →";
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  btn.textContent = 'Formular einreichen →';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ── Submit ─────────────────────────────────────────────────
 async function submitForm() {
   if (!credentialsOk()) {
-    document.getElementById("configError").style.display = "block";
-    document.getElementById("submitArea").style.display = "none";
+    document.getElementById('configError').classList.remove('hidden');
+    document.getElementById('submitArea').style.display = 'none';
     return;
   }
-  const btn = document.getElementById("submitBtn");
+
+  const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = "Wird gespeichert …";
+  btn.textContent = 'Wird gespeichert …';
+  document.getElementById('saveError').classList.add('hidden');
+
   try {
     const data = collectData();
     await saveToGist(data);
-    sendEmail(data);
-    document.getElementById("submitArea").style.display = "none";
-    document.getElementById("successMsg").classList.remove("hidden");
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-  } catch(e) {
+    sendNotification(data); // fire-and-forget
+    document.getElementById('submitArea').style.display = 'none';
+    document.getElementById('successMsg').classList.remove('hidden');
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  } catch (err) {
     btn.disabled = false;
-    btn.textContent = "Formular einreichen →";
-    const msg = document.getElementById("saveError");
-    msg.textContent = "Fehler beim Speichern: " + e.message + " — Bitte nochmal versuchen.";
-    msg.style.display = "block";
+    btn.textContent = 'Formular einreichen →';
+    const errEl = document.getElementById('saveError');
+    errEl.textContent = `Fehler beim Speichern: ${err.message} — Bitte nochmal versuchen.`;
+    errEl.classList.remove('hidden');
   }
 }
 
+// ── Wire up static buttons ─────────────────────────────────
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+document.getElementById('submitBtn').addEventListener('click', submitForm);
+document.getElementById('newFormBtn').addEventListener('click', resetForm);
+
+// ── Init ───────────────────────────────────────────────────
+buildSteps();
 </script>
 </body>
 </html>
